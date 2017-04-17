@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="Normalize_db:war">
+    <output-path>$PROJECT_DIR$/target</output-path>
+    <root id="archive" name="normalize-db-1.0-SNAPSHOT.war">
+      <element id="artifact" artifact-name="Normalize_db:war exploded" />
+    </root>
+  </artifact>
+</component>

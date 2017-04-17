@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE tiles-definitions PUBLIC
+        "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN"
+        "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+<tiles-definitions>
+    <definition name="template"
+                template="/WEB-INF/views/tiles/layouts/main_template.jsp"> <!-- Общий шаблон -->
+        <put-attribute name="header"
+                       value="/WEB-INF/views/tiles/layouts/top_menu.jsp"/>
+        <put-attribute name="footer"
+                       value="/WEB-INF/views/tiles/layouts/footer.jsp"/>
+        <put-attribute name="menu_right"
+                       value="/WEB-INF/views/tiles/layouts/menu_right.jsp"/>
+        <put-attribute name="menu_left"
+                       value="/WEB-INF/views/tiles/layouts/menu_left.jsp"/>
+    </definition>
+
+    <definition name="template-database"
+                template="/WEB-INF/views/tiles/layouts/database_template.jsp"> <!-- Общий шаблон -->
+        <put-attribute name="header"
+                       value="/WEB-INF/views/tiles/layouts/top_menu.jsp"/>
+        <put-attribute name="footer"
+                       value="/WEB-INF/views/tiles/layouts/footer.jsp"/>
+        <put-attribute name="menu_right"
+                       value="/WEB-INF/views/tiles/layouts/menu_right.jsp"/>
+        <put-attribute name="menu_left"
+                       value="/WEB-INF/views/tiles/layouts/menu_left.jsp"/>
+    </definition>
+
+    <!-- Шаблон главной страницы -->
+    <definition name="homePage" extends="template">
+        <put-attribute name="body" value="/WEB-INF/views/home.jsp"/>
+    </definition>
+
+    <!-- Шаблон личного кабинета -->
+    <definition name="personalAccount" extends="template">
+        <put-attribute name="body" value="/WEB-INF/views/lk.jsp"/>
+    </definition>
+
+    <!-- Шаблон авторизации -->
+    <definition name="loginPage" extends="template">
+        <put-attribute name="body" value="/WEB-INF/views/login.jsp"/>
+    </definition>
+
+    <definition name="userDetails" extends="template">
+        <put-attribute name="body" value="/WEB-INF/views/userdetais.jsp"/>
+    </definition>
+
+    <definition name="usersPage" extends="template">
+        <put-attribute name="body" value="/WEB-INF/views/users.jsp"/>
+    </definition>
+
+    <definition name="connectionPage" extends="template">
+        <put-attribute name="body" value="/WEB-INF/views/connection_setting.jsp"/>
+    </definition>
+
+    <definition name="dataBasePage" extends="template-database">
+        <put-attribute name="body" value="/WEB-INF/views/database.jsp"/>
+    </definition>
+
+</tiles-definitions>

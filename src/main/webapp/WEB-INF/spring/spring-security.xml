@@ -1,0 +1,37 @@
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+             xmlns:beans="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+	http://www.springframework.org/schema/security
+	http://www.springframework.org/schema/security/spring-security-3.2.xsd">
+
+    <http auto-config="true" access-denied-page="/auth/denied" use-expressions="true">
+        <intercept-url pattern="/login" access="permitAll" />
+        <intercept-url pattern="/equipments/**" access="hasRole('ROLE_ADMIN')" />
+        <intercept-url pattern="/lk" access="!isAnonymous()" />
+        <intercept-url pattern="/users/*" access="!isAnonymous()" />
+        <intercept-url pattern="/users" access="!isAnonymous()" />
+
+        <form-login
+                login-page="/login"
+                default-target-url="/"
+                authentication-failure-url="/login?error"
+                username-parameter="login"
+                password-parameter="password" />
+        <logout logout-success-url="/login?logout"  />
+
+    </http>
+    <global-method-security pre-post-annotations="enabled"/>
+    <authentication-manager >
+        <authentication-provider user-service-ref="customUserDetailsService">
+            <password-encoder hash='sha-256'/>
+        </authentication-provider>
+    </authentication-manager>
+
+    <beans:bean id="customUserDetailsService" class="ru.jpanda.diplom.normalizedb.service.CustomUserDetailsService" />
+
+    <beans:bean id="passwordEncoder" class="org.springframework.security.authentication.encoding.ShaPasswordEncoder">
+        <beans:constructor-arg value="256"/>
+    </beans:bean>
+
+</beans:beans>
