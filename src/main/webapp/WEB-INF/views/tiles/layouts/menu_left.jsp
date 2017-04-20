@@ -54,7 +54,8 @@
                 columnType: 'json',
             }).done(function (data) {
                 if (data.attributes.length > 0) {
-                    var table = "<table class=\"table table-hover\"><thead><tr></tr></thead>\
+                    var div = "<div><a class='btn btn-primary' href=\'<c:url value='/database/table/analysis/"+ relationTable+"'/>\'>Анализировать</a></div>";
+                    var table = div+"<table class=\"table table-hover\"><thead><tr></tr></thead>\
                 <tbody>\
                 </tbody>\
                 </table>";

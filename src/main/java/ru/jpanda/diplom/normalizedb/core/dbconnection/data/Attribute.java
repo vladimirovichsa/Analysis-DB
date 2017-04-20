@@ -15,6 +15,7 @@ import java.io.Serializable;
 public class Attribute implements Serializable {
 
   private static final long serialVersionUID = 8605668187166117214L;
+  private int arrayIndex;
   private boolean autoIncrement;
   private String name;
   private boolean isPrimaryKey;
@@ -23,6 +24,10 @@ public class Attribute implements Serializable {
   private int isNullable;
   private int columnType;
   private int dataTypeSize;
+
+  private boolean success = false;
+  private boolean notice = false;
+  private boolean warning = false;
 
   public Attribute() {
     super();
@@ -69,6 +74,14 @@ public class Attribute implements Serializable {
     if (!name.equals(this.name)) {
       this.name = name;
     }
+  }
+
+  public int getArrayIndex() {
+    return arrayIndex;
+  }
+
+  public void setArrayIndex(int arrayIndex) {
+    this.arrayIndex = arrayIndex;
   }
 
   // PrimaryKey

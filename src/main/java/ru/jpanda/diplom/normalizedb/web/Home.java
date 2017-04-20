@@ -11,10 +11,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import ru.jpanda.diplom.normalizedb.core.dbconnection.data.Attribute;
 import ru.jpanda.diplom.normalizedb.core.dbconnection.data.Database;
 import ru.jpanda.diplom.normalizedb.core.dbconnection.data.RelationSchema;
 import ru.jpanda.diplom.normalizedb.core.dbconnection.dbConnection.DbConnection;
+import ru.jpanda.diplom.normalizedb.core.dbconnection.logic.analysis.*;
 import ru.jpanda.diplom.normalizedb.domain.*;
 import ru.jpanda.diplom.normalizedb.service.ConnectionDBService;
 import ru.jpanda.diplom.normalizedb.service.DataBaseService;
@@ -28,7 +28,6 @@ import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -208,7 +207,19 @@ public class Home {
         RelationSchema relation = dataBaseService.getConnection().getDatabase().getRelationSchema(schemaName);
 
         return relation;
+    }
 
+    @RequestMapping(value = {"/database/table/analysis/{schemaName}"}, method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @PreAuthorize(value = "!isAnonymous()")
+    public
+    @ResponseBody
+    RelationSchema getAnalysisTableByTableName(@PathVariable(value = "schemaName") String schemaName) throws SQLException {
+        dataBaseService.getConnection().getDataByTableNameFromDb(schemaName);
+        RelationSchema relation = dataBaseService.getConnection().getDatabase().getRelationSchema(schemaName);
+        AnalysisDB analysis = new AnalysisDB(relation);
+        analysis.analysis();
+        return relation;
     }
 
     @RequestMapping(value = {"/database/allConnections/"}, method = RequestMethod.GET,
