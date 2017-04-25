@@ -11,6 +11,7 @@
         <intercept-url pattern="/lk" access="!isAnonymous()" />
         <intercept-url pattern="/users/*" access="!isAnonymous()" />
         <intercept-url pattern="/users" access="!isAnonymous()" />
+        <intercept-url pattern="/database/*" access="!isAnonymous()" />
 
         <form-login
                 login-page="/login"

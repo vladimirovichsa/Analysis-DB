@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.jpanda.diplom.normalizedb.core.dbconnection.data.Database;
 import ru.jpanda.diplom.normalizedb.core.dbconnection.data.RelationSchema;
 import ru.jpanda.diplom.normalizedb.core.dbconnection.dbConnection.DbConnection;
-import ru.jpanda.diplom.normalizedb.core.dbconnection.logic.analysis.*;
+import ru.jpanda.diplom.normalizedb.service.analysis.*;
 import ru.jpanda.diplom.normalizedb.domain.*;
 import ru.jpanda.diplom.normalizedb.service.ConnectionDBService;
 import ru.jpanda.diplom.normalizedb.service.DataBaseService;
@@ -217,8 +217,9 @@ public class Home {
     RelationSchema getAnalysisTableByTableName(@PathVariable(value = "schemaName") String schemaName) throws SQLException {
         dataBaseService.getConnection().getDataByTableNameFromDb(schemaName);
         RelationSchema relation = dataBaseService.getConnection().getDatabase().getRelationSchema(schemaName);
-        AnalysisDB analysis = new AnalysisDB(relation);
-        analysis.analysis();
+        AnalysisDB analysisDB = new AnalysisDB();
+        analysisDB.setRelationSchema(relation);
+        analysisDB.analysis();
         return relation;
     }
 

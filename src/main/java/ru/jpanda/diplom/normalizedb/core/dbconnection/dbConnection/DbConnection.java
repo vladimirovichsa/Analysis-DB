@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
  * @author Alexey Storozhev
  */
 public abstract class DbConnection {
@@ -108,15 +107,25 @@ public abstract class DbConnection {
 
     public void getDataByTableNameFromDb(String relationName) throws SQLException {
         ResultSet rs = execute("SELECT * FROM " + relationName);
+        int fetchSize = rs.getFetchSize();
         ResultSetMetaData md = rs.getMetaData();
         List<List<String>> data = new ArrayList<>();
         int col = md.getColumnCount();
+        int i = 1;
+        List<String> columnData = null;
         while (rs.next()) {
-            List<String> tableData = new ArrayList<>();
-            for (int i = 1; i <= col; i++) {
-                tableData.add(rs.getString(i));
+            if (columnData == null)
+                columnData = new ArrayList<>();
+
+            boolean last = rs.isLast();
+            columnData.add(rs.getString(i));
+            if (last && data.size() != col) {
+                rs.beforeFirst();
+                data.add(columnData);
+                if ((i + 1) < col)
+                    i++;
+                columnData = null;
             }
-            data.add(tableData);
         }
         rs.getStatement().close();
         database.getRelationSchemaByName(relationName).setData(data);
@@ -124,7 +133,15 @@ public abstract class DbConnection {
 
     private ResultSet execute(String query) throws SQLException {
         Connection conn = DBSingleton.getInstance();
-        Statement stmt = conn.createStatement();
+        DatabaseMetaData dbmd = conn.getMetaData();
+        Statement stmt = null;
+        int JDBCVersion = dbmd.getJDBCMajorVersion();
+        boolean srs = dbmd.supportsResultSetType(ResultSet.TYPE_SCROLL_INSENSITIVE);
+        if (srs) {
+            stmt = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+        } else {
+            stmt = conn.createStatement();
+        }
         System.out.println(query);
         return stmt.executeQuery(query);
     }

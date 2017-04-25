@@ -1,5 +1,7 @@
-package ru.jpanda.diplom.normalizedb.core.dbconnection.logic.analysis;
+package ru.jpanda.diplom.normalizedb.service.analysis;
 
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import ru.jpanda.diplom.normalizedb.core.dbconnection.data.Attribute;
 import ru.jpanda.diplom.normalizedb.core.dbconnection.data.RelationSchema;
 
@@ -11,16 +13,24 @@ import java.util.Set;
 /**
  * Created by Alexey on 20.04.2017.
  */
+@Component
 public class AnalysisDB {
 
     private RelationSchema relationSchema;
 
-    public AnalysisDB(RelationSchema relationSchema) {
-        this.relationSchema = relationSchema;
+    public AnalysisDB(){
     }
 
     public RelationSchema analysis() {
         return getData(relationSchema);
+    }
+
+    public RelationSchema getRelationSchema() {
+        return relationSchema;
+    }
+
+    public void setRelationSchema(RelationSchema relationSchema) {
+        this.relationSchema = relationSchema;
     }
 
     private RelationSchema getData(RelationSchema relationSchema) {

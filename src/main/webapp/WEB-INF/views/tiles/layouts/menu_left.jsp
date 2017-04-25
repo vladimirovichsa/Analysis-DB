@@ -47,42 +47,48 @@
 
 <script>
     function viewTable(relationTable, object) {
-            $.ajax({
-                type: "GET",
-                contentType: 'application/json',
-                url: "/database/table/" + relationTable,
-                columnType: 'json',
-            }).done(function (data) {
-                if (data.attributes.length > 0) {
-                    var div = "<div><a class='btn btn-primary' href=\'<c:url value='/database/table/analysis/"+ relationTable+"'/>\'>Анализировать</a></div>";
-                    var table = div+"<table class=\"table table-hover\"><thead><tr></tr></thead>\
+        $.ajax({
+            type: "GET",
+            contentType: 'application/json',
+            url: "/database/table/" + relationTable,
+            columnType: 'json',
+        }).done(function (data) {
+            if (data.attributes.length > 0) {
+                var div = "<div><a class='btn btn-primary' href=\'<c:url value='/database/table/analysis/"+ relationTable+"'/>\'>Анализировать</a></div>";
+                var table = div + "<table class=\"table table-hover\"><thead><tr></tr></thead>\
                 <tbody>\
                 </tbody>\
                 </table>";
-                    var th;
-                    var tr;
-                    $("#content").html(table);
-                    for (var i = 0; i < data.attributes.length; i++) {
-                        th += "<th><a href=\"#\"><span> " + data.attributes[i].name + "</span></a></th>";
-                    }
-                    if (data.data.length > 0) {
-                        for (var i = 0; i < data.data.length; i++) {
-                            tr += "<tr>";
-                            for (var j = 0; j < data.data[i].length; j++) {
-                                tr += "<td>" + data.data[i][j] + "</td>"
-                            }
-                            tr += "</tr>";
-                        }
-                    }
-                    if (th != null) {
-                        $("#content table thead tr").html(th);
-                    }
-                    if (tr != null) {
-                        $("#content table tbody").html(tr);
-                    }
-
+                var th;
+                var tr;
+                $("#content").html(table);
+                for (var i = 0; i < data.attributes.length; i++) {
+                    th += "<th><a href=\"#\"><span> " + data.attributes[i].name + "</span></a></th>";
                 }
-            });
+                if (data.data.length > 0) {
+                    for (var i = 0; i < data.data.length; i++) {
+
+                        for (var j = 0; j < data.data[i].length; j++) {
+                            if (i == 0 ) {
+                                tr += "<tr>";
+                            }
+                            tr += "<td>" + data.data[i][j] + "</td>";
+                            if (i == data.data.length) {
+                                tr += "</tr>";
+                            }
+                        }
+
+                    }
+                }
+                if (th != null) {
+                    $("#content table thead tr").html(th);
+                }
+                if (tr != null) {
+                    $("#content table tbody").html(tr);
+                }
+
+            }
+        });
     }
 
 </script>
