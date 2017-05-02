@@ -26,7 +26,7 @@
     </c:if>
     <c:if test="${empty connectionList}">
         <div class="col-xs-10 col-sm-7 col-md-8">
-            <a class="btn btn-primary" href="<c:url value="/connections"/>">Добавит подключение</a>
+            <a class="btn btn-primary" href="<c:url value="/connections"/>">Добавить подключение</a>
         </div>
     </c:if>
 </div>

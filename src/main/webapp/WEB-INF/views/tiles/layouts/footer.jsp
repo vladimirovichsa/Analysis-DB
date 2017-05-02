@@ -38,9 +38,8 @@
 
         });
         jQuery("#new_repair").dialog({
-            title: "Добавление новой заявки",
-            width: 550,
-            height: 470,
+            width: 500,
+            height: 100,
             modal: true,
             resizable: false
         });

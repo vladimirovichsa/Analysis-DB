@@ -30,9 +30,9 @@
 
     function openItem() {
         jQuery("#new_users").dialog({
-                title: "Добавление подключения к базе данных",
-                width: 640,
-                height: 400,
+                title: "Добавление подключение к базе данных",
+                width: 550,
+                height: 500,
                 resizable: false,
                 cache: false,
                 modal: true
@@ -97,9 +97,9 @@
         </table>
     </center>
 </div>
-<div id="new_users" title="Добавление подключения к базе данных" style="display: none">
-    <div class="col-md-5" style="margin-top: 45px;margin-left: 50px">
-        <table>
+<div id="new_users" title="Добавление подключение к базе данных" style="display: none">
+    <div class="col-md-5">
+        <table class="table">
             <form:form method="POST" modelAttribute="connectionForm">
                 <tr>
                     <td><label><spring:message text="Тип базы данных "/></label></td>
@@ -113,15 +113,9 @@
                     <p id="error2" style="color: red"></p>
                 </tr>
                 <tr>
-                    <td colspan="2"><br/></td>
-                </tr>
-                <tr>
                     <td><label><spring:message text="Хост "/></label></td>
                     <td><form:input path="host" id="work_hour3"/></td>
                     <p id="error3" style="color: red"></p>
-                </tr>
-                <tr>
-                    <td colspan="2"><br/></td>
                 </tr>
                 <tr>
                     <td><label><spring:message text="Порт "/></label></td>
@@ -129,15 +123,9 @@
                     <p id="error1" style="color: red"></p>
                 </tr>
                 <tr>
-                    <td colspan="2"><br/></td>
-                </tr>
-                <tr>
                     <td><label><spring:message text="База данных "/></label></td>
                     <td><form:input path="data_base" id="work_hour4"/></td>
                     <p id="error4" style="color: red"></p>
-                </tr>
-                <tr>
-                    <td colspan="2"><br/></td>
                 </tr>
                 <tr>
                 <td><label><spring:message text="Имя пользователя "/></label></td>
@@ -145,33 +133,14 @@
                 <p id ="error5" style="color: red"></p>
                 </tr>
                 <tr>
-                    <td colspan="2"><br/></td>
-                </tr>
-                <tr>
                 <td><label><spring:message text="Пароль "/></label></td>
                 <td><form:input path="password" id="work_hour6" /></td>
                 <p id ="error6" style="color: red"></p>
                 </tr>
                 <tr>
-                    <td colspan="2"><br/></td>
-                </tr>
-                <tr>
                 <td><label><spring:message text="Url "/></label></td>
                 <td><form:input path="url" id="work_hour7"/></td>
                 <p id ="error7" style="color: red"></p>
-                </tr>
-                <tr>
-                    <td colspan="2"><br/></td>
-                </tr>
-                <tr>
-                        <%--<form:select path="type_id" class="form-control"  name="maintenanceType" id="work_hour2">--%>
-                        <%--<c:forEach items="${userForm.type}" var="item">--%>
-                        <%--<form:option value="${item.getId}">${item.getType}</form:option>--%>
-                        <%--</c:forEach>--%>
-                        <%--</form:select>--%>
-                </tr>
-                <tr>
-                    <td colspan="2"><br/></td>
                 </tr>
                 <tr>
                     <td align="center">
@@ -185,9 +154,6 @@
                                onclick="jQuery('#new_users').dialog('close');"
                                value="<spring:message text="Закрыть" />"/>
                     </td>
-                </tr>
-                <tr>
-                    <td colspan="2"><br/></td>
                 </tr>
             </form:form>
         </table>
