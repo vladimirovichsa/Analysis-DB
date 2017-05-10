@@ -61,6 +61,7 @@ public abstract class DbConnection {
                 int nullable = md.isNullable(i);
                 boolean autoIncrement = md.isAutoIncrement(i);
                 Attribute attr = new Attribute(col_name);
+                attr.setArrayIndex(i-1);
                 String constraints = "";
                 if (nullable == 0) {
                     constraints = constraints + " NOT NULL";
@@ -105,7 +106,8 @@ public abstract class DbConnection {
         }
     }
 
-    public void getDataByTableNameFromDb(String relationName) throws SQLException {
+
+    public void getDataByTableNameFromAnalysis(String relationName) throws SQLException {
         ResultSet rs = execute("SELECT * FROM " + relationName);
         int fetchSize = rs.getFetchSize();
         ResultSetMetaData md = rs.getMetaData();
@@ -128,8 +130,25 @@ public abstract class DbConnection {
             }
         }
         rs.getStatement().close();
+        database.getRelationSchemaByName(relationName).setDataFromAnalysis(data);
+    }
+
+    public void getDataByTableNameFromDb(String relationName) throws SQLException {
+        ResultSet rs = execute("SELECT * FROM " + relationName);
+        ResultSetMetaData md = rs.getMetaData();
+        List<List<String>> data = new ArrayList<>();
+        int col = md.getColumnCount();
+        while (rs.next()) {
+            List<String> tableData = new ArrayList<>();
+            for (int i = 1; i <= col; i++) {
+                tableData.add(rs.getString(i));
+            }
+            data.add(tableData);
+        }
+        rs.getStatement().close();
         database.getRelationSchemaByName(relationName).setData(data);
     }
+
 
     private ResultSet execute(String query) throws SQLException {
         Connection conn = DBSingleton.getInstance();

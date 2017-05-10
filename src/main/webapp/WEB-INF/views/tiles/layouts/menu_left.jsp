@@ -67,7 +67,7 @@
                 }
                 if (data.data.length > 0) {
                     for (var i = 0; i < data.data.length; i++) {
-
+                        /*
                         for (var j = 0; j < data.data[i].length; j++) {
                             if (i == 0 ) {
                                 tr += "<tr>";
@@ -76,6 +76,13 @@
                             if (i == data.data.length) {
                                 tr += "</tr>";
                             }
+                        }*/
+                        for (var i = 0; i < data.data.length; i++) {
+                            tr += "<tr>";
+                            for (var j = 0; j < data.data[i].length; j++) {
+                                tr += "<td>" + data.data[i][j] + "</td>"
+                            }
+                            tr += "</tr>";
                         }
 
                     }

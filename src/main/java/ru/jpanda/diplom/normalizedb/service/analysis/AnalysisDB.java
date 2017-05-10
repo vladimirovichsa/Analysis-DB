@@ -2,6 +2,7 @@ package ru.jpanda.diplom.normalizedb.service.analysis;
 
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+import ru.jpanda.diplom.normalizedb.Util.Constants;
 import ru.jpanda.diplom.normalizedb.core.dbconnection.data.Attribute;
 import ru.jpanda.diplom.normalizedb.core.dbconnection.data.RelationSchema;
 
@@ -35,12 +36,15 @@ public class AnalysisDB {
 
     private RelationSchema getData(RelationSchema relationSchema) {
         ArrayList<Attribute> attributes = relationSchema.getAttributes();
-        List<List<String>> attributeData = relationSchema.getData();
+        List<List<String>> attributeData = relationSchema.getDataFromAnalysis();
         for (Attribute attribute : attributes) {
             if(checkAttributeOnAnalysis(attribute)){
                 List<String> strings = attributeData.get(attribute.getArrayIndex());
                 Set<String> uniqueString = new HashSet<>(strings);
                 int percentNotUniqueRow = (uniqueString.size()*100) / strings.size();
+                if(percentNotUniqueRow <= Constants.PERCENT_UNIQUE_ROWS_COLUMN ){
+
+                }
             }
         }
         return relationSchema;

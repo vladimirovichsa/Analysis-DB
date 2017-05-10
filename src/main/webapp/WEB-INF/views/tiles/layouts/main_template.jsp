@@ -63,17 +63,17 @@
 </head>
 <body>
 
-<div id="container" >
+<div id="container">
     <div id="header" class="col-md-12">
         <t:insertAttribute name="header"/>
     </div>
-        <div id="content" class="col-md-12">
-                <t:insertAttribute name="body"/>
-        </div>
-        <%--<div id="menu_right" class="col-md-2">--%>
-            <%--<t:insertAttribute name="menu_right"/>--%>
-        <%--</div>--%>
-    <div id="footer" class="navbar-fixed-bottom">
+    <div id="content" class="col-md-12">
+        <t:insertAttribute name="body"/>
+    </div>
+    <%--<div id="menu_right" class="col-md-2">--%>
+    <%--<t:insertAttribute name="menu_right"/>--%>
+    <%--</div>--%>
+    <div id="footer" class="navbar-fixed-bottom col-md-12">
         <t:insertAttribute name="footer"/>
     </div>
 </div>

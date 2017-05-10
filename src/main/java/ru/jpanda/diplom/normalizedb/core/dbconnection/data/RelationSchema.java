@@ -22,6 +22,7 @@ public class RelationSchema implements Serializable {
   private List<List<String>> data;
   private static int id = 0;
   private int ownId;
+  private List<List<String>> dataFromAnalysis;
 
   public RelationSchema() {
     super();
@@ -230,5 +231,13 @@ public class RelationSchema implements Serializable {
 
   public List<List<String>> getData() {
     return data;
+  }
+
+  public void setDataFromAnalysis(List<List<String>> data) {
+    this.dataFromAnalysis = data;
+  }
+
+  public List<List<String>> getDataFromAnalysis() {
+    return dataFromAnalysis;
   }
 }
