@@ -19,7 +19,7 @@ public class AnalysisDB {
 
     private RelationSchema relationSchema;
 
-    public AnalysisDB(){
+    public AnalysisDB() {
     }
 
     public RelationSchema analysis() {
@@ -38,11 +38,20 @@ public class AnalysisDB {
         ArrayList<Attribute> attributes = relationSchema.getAttributes();
         List<List<String>> attributeData = relationSchema.getDataFromAnalysis();
         for (Attribute attribute : attributes) {
-            if(checkAttributeOnAnalysis(attribute)){
+            if (checkAttributeOnAnalysis(attribute)) {
                 List<String> strings = attributeData.get(attribute.getArrayIndex());
                 Set<String> uniqueString = new HashSet<>(strings);
-                int percentNotUniqueRow = (uniqueString.size()*100) / strings.size();
-                if(percentNotUniqueRow <= Constants.PERCENT_UNIQUE_ROWS_COLUMN ){
+                double percentNotUniqueRow = (uniqueString.size() * 100) / strings.size();
+                double percentFromPercent = percentNotUniqueRow * Constants.PERCENT_FOR_PERCENT / 100;
+                if (percentNotUniqueRow <= Constants.PERCENT_UNIQUE_ROWS_COLUMN_CRITICAL + percentFromPercent) {
+
+                } else if (percentNotUniqueRow <= Constants.PERCENT_UNIQUE_ROWS_COLUMN_WARNING + percentFromPercent) {
+
+                } else if (percentNotUniqueRow <= Constants.PERCENT_UNIQUE_ROWS_COLUMN_NOTICE + percentFromPercent) {
+
+                } else if (percentNotUniqueRow <= Constants.PERCENT_UNIQUE_ROWS_COLUMN_NORMAL + percentFromPercent) {
+
+                } else {
 
                 }
             }
@@ -50,8 +59,8 @@ public class AnalysisDB {
         return relationSchema;
     }
 
-    private boolean checkAttributeOnAnalysis(Attribute attribute){
-        if(attribute.isAutoIncrement() || attribute.getIsPrimaryKey() || attribute.getIsForeignKey()){
+    private boolean checkAttributeOnAnalysis(Attribute attribute) {
+        if (attribute.isAutoIncrement() || attribute.getIsPrimaryKey() || attribute.getIsForeignKey()) {
             return false;
         }
         return true;
