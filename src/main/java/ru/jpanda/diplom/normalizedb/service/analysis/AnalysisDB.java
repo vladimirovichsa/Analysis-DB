@@ -42,18 +42,17 @@ public class AnalysisDB {
                 List<String> strings = attributeData.get(attribute.getArrayIndex());
                 Set<String> uniqueString = new HashSet<>(strings);
                 double percentNotUniqueRow = (uniqueString.size() * 100) / strings.size();
-                double percentFromPercent = percentNotUniqueRow * Constants.PERCENT_FOR_PERCENT / 100;
-                if (percentNotUniqueRow <= Constants.PERCENT_UNIQUE_ROWS_COLUMN_CRITICAL + percentFromPercent) {
-
-                } else if (percentNotUniqueRow <= Constants.PERCENT_UNIQUE_ROWS_COLUMN_WARNING + percentFromPercent) {
-
-                } else if (percentNotUniqueRow <= Constants.PERCENT_UNIQUE_ROWS_COLUMN_NOTICE + percentFromPercent) {
-
-                } else if (percentNotUniqueRow <= Constants.PERCENT_UNIQUE_ROWS_COLUMN_NORMAL + percentFromPercent) {
-
-                } else {
-
+                if (percentNotUniqueRow <= Constants.PERCENT_UNIQUE_ROWS_COLUMN_CRITICAL) {
+                    attribute.setCritical(true);
+                } else if (percentNotUniqueRow <= Constants.PERCENT_UNIQUE_ROWS_COLUMN_WARNING) {
+                    attribute.setWarning(true);
+                } else if (percentNotUniqueRow <= Constants.PERCENT_UNIQUE_ROWS_COLUMN_NORMAL) {
+                    attribute.setNotice(true);
+                } else if (percentNotUniqueRow > Constants.PERCENT_UNIQUE_ROWS_COLUMN_NORMAL) {
+                    attribute.setNormal(true);
                 }
+            }else {
+                attribute.setNormal(true);
             }
         }
         return relationSchema;

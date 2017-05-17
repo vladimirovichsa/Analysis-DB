@@ -54,14 +54,14 @@
             columnType: 'json',
         }).done(function (data) {
             if (data.attributes.length > 0) {
-                var div = "<div><a class='btn btn-primary' href=\'<c:url value='/database/table/analysis/"+ relationTable+"'/>\'>Анализировать</a></div>";
+                var div = '<div><button class="btn btn-primary" onclick="openResultAnalize(\''+relationTable+'\')">Анализировать</button></div>';
                 var table = div + "<table class=\"table table-hover\"><thead><tr></tr></thead>\
                 <tbody>\
                 </tbody>\
                 </table>";
                 var th;
                 var tr;
-                $("#content").html(table);
+                $("#table-content").html(table);
                 for (var i = 0; i < data.attributes.length; i++) {
                     th += "<th><a href=\"#\"><span> " + data.attributes[i].name + "</span></a></th>";
                 }
@@ -88,10 +88,10 @@
                     }
                 }
                 if (th != null) {
-                    $("#content table thead tr").html(th);
+                    $("#table-content table thead tr").html(th);
                 }
                 if (tr != null) {
-                    $("#content table tbody").html(tr);
+                    $("#table-content table tbody").html(tr);
                 }
 
             }

@@ -2,9 +2,6 @@ package ru.jpanda.diplom.normalizedb.core.dbconnection.data;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 
 /**
@@ -25,9 +22,10 @@ public class Attribute implements Serializable {
   private int columnType;
   private int dataTypeSize;
 
-  private boolean success = false;
+  private boolean normal = false;
   private boolean notice = false;
   private boolean warning = false;
+  private boolean critical = false;
 
   public Attribute() {
     super();
@@ -135,6 +133,38 @@ public class Attribute implements Serializable {
 
   public void setDataTypeSize(int dataTypeSize) {
     this.dataTypeSize = dataTypeSize;
+  }
+
+  public boolean isNormal() {
+    return normal;
+  }
+
+  public void setNormal(boolean normal) {
+    this.normal = normal;
+  }
+
+  public boolean isNotice() {
+    return notice;
+  }
+
+  public void setNotice(boolean notice) {
+    this.notice = notice;
+  }
+
+  public boolean isWarning() {
+    return warning;
+  }
+
+  public void setWarning(boolean warning) {
+    this.warning = warning;
+  }
+
+  public boolean isCritical() {
+    return critical;
+  }
+
+  public void setCritical(boolean critical) {
+    this.critical = critical;
   }
 
   @JsonIgnore
