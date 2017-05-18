@@ -23,25 +23,70 @@
         color: green;
     }
 
-    .notice{
+    .notice {
         background: #f5ff0b;
     }
-    .warning{
+
+    .warning {
         background: #ff8f08;
     }
-    .critical{
+
+    .critical {
         background: #ff230d;
+    }
+    #header-table {
+        width: 150%;
+        display: block;
+        position: fixed;
+        background: #fff;
+        overflow: hidden;
+        z-index: 1;
+    }
+    #header-table div {
+        display: table-cell;
+        padding: 15px;
+        border: 1px solid #ccc;
+        border-collapse: collapse;
+        font-weight: bold;
+    }
+
+    thead {
+        visibility: hidden;
     }
 </style>
 <div id="table-content">
     <h2>Выберите таблицу для отображения данных</h2>
 </div>
 <div id="analize-table-dialog">
+    <div id="header-table"></div>
     <div id="analize-table-content"></div>
 </div>
 
 
 <script userUserType="text/javascript">
+
+    jQuery(document).ready(function($){
+        var $table = $('table'),
+            $header = $('#header-table'),
+            $thead = $('thead');
+        $thead.find('th').each(function(){
+            var $newdiv = $('<div />', {
+                style: 'width:'+ $(this).width()+'px'
+
+            });
+            $newdiv.text($(this).text());
+            $header.append($newdiv);
+        });
+
+        var $viewport = $(window);
+
+        $viewport.scroll(function(){
+            $header.css({
+                left: -$(this).scrollLeft()
+            });
+
+        });
+    });
 
     function openResultAnalize(relationTable) {
         jQuery("#analize-table-dialog").dialog({
@@ -69,6 +114,7 @@
                 $("#analize-table-content").html(table);
                 for (var i = 0; i < data.attributes.length; i++) {
                     th += "<th><a href=\"#\"><span> " + data.attributes[i].name + "</span></a></th>";
+
                 }
                 if (data.data.length > 0) {
                     for (var i = 0; i < data.data.length; i++) {
@@ -82,18 +128,16 @@
                          tr += "</tr>";
                          }
                          }*/
-                        for (var i = 0; i < data.data.length; i++) {
-                            tr += "<tr>";
-                            for (var j = 0; j < data.data[i].length; j++) {
-                                var style = "";
-                                if (data.attributes[i].normal == true) style = "";
-                                if (data.attributes[i].notice == true) style = "notice";
-                                if (data.attributes[i].warning == true) style = "warning";
-                                if (data.attributes[i].critical == true) style = "critical";
-                                tr += "<td class='" + style + "'>" + data.data[i][j] + "</td>"
-                            }
-                            tr += "</tr>";
+                        tr += "<tr>";
+                        for (var j = 0; j < data.data[i].length; j++) {
+                            var style = "";
+                            if (data.attributes[j].normal == true) style = "";
+                            if (data.attributes[j].notice == true) style = "notice";
+                            if (data.attributes[j].warning == true) style = "warning";
+                            if (data.attributes[j].critical == true) style = "critical";
+                            tr += "<td class='" + style + "'>" + data.data[i][j] + "</td>";
                         }
+                        tr += "</tr>";
 
                     }
                 }
