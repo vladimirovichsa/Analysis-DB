@@ -1,5 +1,6 @@
 package ru.jpanda.diplom.normalizedb.service.analysis;
 
+import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import ru.jpanda.diplom.normalizedb.Util.Constants;

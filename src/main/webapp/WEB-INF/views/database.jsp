@@ -34,67 +34,53 @@
     .critical {
         background: #ff230d;
     }
-    #header-table {
-        width: 150%;
-        display: block;
-        position: fixed;
-        background: #fff;
-        overflow: hidden;
-        z-index: 1;
-    }
-    #header-table div {
-        display: table-cell;
-        padding: 15px;
-        border: 1px solid #ccc;
-        border-collapse: collapse;
-        font-weight: bold;
-    }
 
-    thead {
-        visibility: hidden;
+    .checkbox{
+        float: left;
+        display: block;
     }
 </style>
-<div id="table-content">
+<div id="table-content" >
     <h2>Выберите таблицу для отображения данных</h2>
 </div>
-<div id="analize-table-dialog">
-    <div id="header-table"></div>
-    <div id="analize-table-content"></div>
+<div id="analize-table-dialog" style="overflow-x: auto;">
+    <div id="analize-table-content" ></div>
 </div>
 
 
 <script userUserType="text/javascript">
 
-    jQuery(document).ready(function($){
-        var $table = $('table'),
-            $header = $('#header-table'),
-            $thead = $('thead');
-        $thead.find('th').each(function(){
-            var $newdiv = $('<div />', {
-                style: 'width:'+ $(this).width()+'px'
-
-            });
-            $newdiv.text($(this).text());
-            $header.append($newdiv);
-        });
-
-        var $viewport = $(window);
-
-        $viewport.scroll(function(){
-            $header.css({
-                left: -$(this).scrollLeft()
-            });
-
-        });
-    });
+//    jQuery(document).ready(function($){
+//        var $table = $('table'),
+//            $header = $('#header-table'),
+//            $thead = $('thead');
+//        $thead.find('th').each(function(){
+//            var $newdiv = $('<div />', {
+//                style: 'width:'+ $(this).width()+'px'
+//
+//            });
+//            $newdiv.text($(this).text());
+//            $header.append($newdiv);
+//        });
+//
+//        var $viewport = $(window);
+//
+//        $viewport.scroll(function(){
+//            $header.css({
+//                left: -$(this).scrollLeft()
+//            });
+//
+//        });
+//    });
 
     function openResultAnalize(relationTable) {
         jQuery("#analize-table-dialog").dialog({
             title: "Результат анализа",
-            width: 700,
-            height: 500,
+            width: 800,
+            height: 600,
             modal: true,
-            resizable: true
+            position : { my: "center top", at: "center top", of: window },
+            resizable: false
         });
 
         $('#analize-table-content').html('<H1>загрузка...</H1>');
@@ -113,7 +99,15 @@
                 var tr;
                 $("#analize-table-content").html(table);
                 for (var i = 0; i < data.attributes.length; i++) {
-                    th += "<th><a href=\"#\"><span> " + data.attributes[i].name + "</span></a></th>";
+                    var checkBoxDisable = "" ;
+                    if(data.attributes[i].isForeignKey == true || data.attributes[i].isPrimaryKey == true){
+                        checkBoxDisable = "disabled";
+                    }
+                    th += "<th>" +
+                        "<input class='checkbox' type='checkbox' value='"+i+"' "+checkBoxDisable+">" +
+                        "<span style='padding-left: 20px; display: block;width:auto;'> " + data.attributes[i].name +" "+
+                        "</span>" +
+                        "</th>";
 
                 }
                 if (data.data.length > 0) {
