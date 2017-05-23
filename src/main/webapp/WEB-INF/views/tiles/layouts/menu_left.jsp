@@ -55,10 +55,10 @@
         }).done(function (data) {
             if (data.attributes.length > 0) {
                 var div = '<div><button class="btn btn-primary" onclick="openResultAnalize(\''+relationTable+'\')">Анализировать</button></div>';
-                var table = div + "<table class=\"table table-hover\"><thead><tr></tr></thead>\
+                var table = div + "<div id=\"table-table\"><table class=\"table table-hover\"><thead><tr></tr></thead>\
                 <tbody>\
                 </tbody>\
-                </table>";
+                </table></div>";
                 var th;
                 var tr;
                 $("#table-content").html(table);
