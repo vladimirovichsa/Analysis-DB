@@ -45,7 +45,14 @@
 </div>
 <div id="analize-table-dialog" style="overflow-x: auto;">
     <div id="analize-table-content" ></div>
-    <div id="create-table-content" ></div>
+    <div id="create-table-content" >
+        <div class="control-group">
+            <label class="control-label" for="inputTableName">Название таблицы</label>
+            <div class="controls">
+                <input type="text" id="inputTableName" placeholder="Введите имя таблицы">
+            </div>
+        </div>
+    </div>
 </div>
 
 
@@ -143,15 +150,15 @@
                 }
             ]
         });
-        $.ajax({
-            userUserType: "GET",
-            contentType: 'application/json',
-            url: "/repair/" + repairId,
-            columnType: 'json',
-            mimeType: 'application/json',
-        }).done(function (data) {
-
-        });
+//        $.ajax({
+//            userUserType: "GET",
+//            contentType: 'application/json',
+//            url: "/repair/" + repairId,
+//            columnType: 'json',
+//            mimeType: 'application/json',
+//        }).done(function (data) {
+//
+//        });
     }
 
     function confirmRepair(statusId) {
