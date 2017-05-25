@@ -35,43 +35,54 @@
         background: #ff230d;
     }
 
-    .checkboxh{
+    .checkboxh {
         float: left;
         display: block;
     }
 </style>
-<div id="table-content" >
+<div id="table-content">
     <h2>Выберите таблицу для отображения данных</h2>
 </div>
 <div id="analize-table-dialog" style="overflow-x: auto;">
-    <div id="analize-table-content" ></div>
-    <div id="create-table-content" >
-        <div class="control-group">
-            <label class="control-label" for="inputTableName">Название таблицы</label>
-            <div class="controls">
-                <input type="text" id="inputTableName" placeholder="Введите имя таблицы">
+    <div id="analize-table-content"></div>
+    <div id="create-table-content">
+        <div class="form-group row">
+            <label for="inputEmail3" class="col-sm-3 col-form-label">Название таблицы</label>
+            <div class="col-sm-8">
+                <input type="email" class="form-control" id="inputEmail3" placeholder="Введите имя таблицы">
             </div>
         </div>
+        <table class="table table-hover">
+            <thead>
+            <tr></tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+        <select class="form-control form-control-sm">
+            <option>Small select</option>
+        </select>
     </div>
+
 </div>
 
 
 <script>
 
-    $(document).ready(function() {
-        $( '#analize-table-content' ).show();
-        $( '#create-table-content' ).hide();
-        var countChecked = function() {
+    $(document).ready(function () {
+        $('#analize-table-content').show();
+        $('#create-table-content').hide();
+        var countChecked = function () {
             var n = $("#table-table table input:checked").length;
             var disBoll = true;
-            if(n != 0){
+            if (n != 0) {
                 disBoll = false;
             }
-            $("#apply").prop('disabled',disBoll);
+            $("#apply").prop('disabled', disBoll);
         };
         countChecked();
 
-        $("#table-content").on("click",".checkboxh", countChecked );
+        $("#table-content").on("click", ".checkboxh", countChecked);
     });
 
     function openResultAnalize(relationTable) {
@@ -94,13 +105,13 @@
                 $('#table-content div').append(appendButton);
                 $("#table-table").html(table);
                 for (var i = 0; i < data.attributes.length; i++) {
-                    var checkBoxDisable = "" ;
-                    if(data.attributes[i].isForeignKey == true || data.attributes[i].isPrimaryKey == true){
+                    var checkBoxDisable = "";
+                    if (data.attributes[i].isForeignKey == true || data.attributes[i].isPrimaryKey == true) {
                         checkBoxDisable = "disabled";
                     }
                     th += "<th>" +
-                        "<input class='checkboxh' type='checkbox' value='"+i+"' "+checkBoxDisable+">" +
-                        "<span style='padding-left: 20px; display: block;width:auto;'> " + data.attributes[i].name +" "+
+                        "<input class='checkboxh' type='checkbox' value='" + i + "' " + checkBoxDisable + ">" +
+                        "<span style='padding-left: 20px; display: block;width:auto;'> " + data.attributes[i].name + " " +
                         "</span>" +
                         "</th>";
 
@@ -136,7 +147,7 @@
             width: 800,
             height: 600,
             modal: true,
-            position : { my: "center top", at: "center top", of: window },
+            position: {my: "center top", at: "center top", of: window},
             resizable: false,
             buttons: [
                 {
@@ -144,7 +155,7 @@
                     icons: {
                         primary: "ui-icon-next"
                     },
-                    click: function() {
+                    click: function () {
 
                     }
                 }
