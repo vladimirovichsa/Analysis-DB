@@ -47,16 +47,33 @@
     <div id="analize-table-content"></div>
     <div id="create-table-content">
         <div class="form-group row">
-            <label for="inputEmail3" class="col-sm-3 col-form-label">Название таблицы</label>
+            <label for="table-name" class="col-sm-3 col-form-label">Название таблицы</label>
             <div class="col-sm-8">
-                <input type="email" class="form-control" id="inputEmail3" placeholder="Введите имя таблицы">
+                <input type="email" class="form-control" id="table-name" placeholder="Введите имя таблицы">
             </div>
         </div>
         <table class="table table-hover">
             <thead>
-            <tr></tr>
+            <tr>
+                <th>Имя</th>
+                <th>Тип</th>
+                <th>Not Null</th>
+                <th>Auto inc</th>
+                <th>Unique</th>
+                <th>Primary key</th>
+            </tr>
             </thead>
             <tbody>
+            <tr>
+                <td><input id="column-name" type="text"></td>
+                <td><select id="column-type" class="form-control form-control-sm">
+                    <option>Small select</option>
+                </select></td>
+                <td><input id="not-null" type="checkbox"></td>
+                <td><input id="auto-inc" type="checkbox"></td>
+                <td><input id="unique" type="checkbox"></td>
+                <td><input id="primary-key" type="checkbox"></td>
+            </tr>
             </tbody>
         </table>
         <select class="form-control form-control-sm">
