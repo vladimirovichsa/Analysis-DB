@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import ru.jpanda.diplom.normalizedb.core.dbconnection.data.Attribute;
 import ru.jpanda.diplom.normalizedb.core.dbconnection.data.Database;
 import ru.jpanda.diplom.normalizedb.core.dbconnection.data.RelationSchema;
 import ru.jpanda.diplom.normalizedb.core.dbconnection.dbConnection.DbConnection;
@@ -30,6 +31,8 @@ import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -176,6 +179,25 @@ public class DataBase {
 
     }
 
+    @RequestMapping(value = {"/database/getColumnByTableName/{tableName}"}, method = RequestMethod.POST,
+            produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @PreAuthorize(value = "!isAnonymous()")
+    public
+    @ResponseBody
+    List<Attribute> getColumnByTableName(@PathVariable(value = "tableName") String tableName,
+                                         Model model, @RequestParam(value = "columns[]") String... columns) {
+        List<Attribute> list = dataBaseService.getConnection().getDatabase().getRelationSchema(tableName).getAttributes();
+        List<Attribute> attributes = new ArrayList<>();
+        for (String s : columns) {
+            for (Attribute attribute : list) {
+                if(attribute.getArrayIndex() == Integer.parseInt(s)){
+                    attributes.add(attribute);
+                }
+            }
+        }
+        return attributes;
+    }
+
 
     private String getPrincipal() {
         String userName = null;
@@ -189,4 +211,26 @@ public class DataBase {
         return userName;
     }
 
+    @RequestMapping(value = "/database/createtable/{tableId}", method = RequestMethod.POST,
+            produces = "application/json")
+    public void createTable(@PathVariable("tableId") int tableId,
+                            @RequestParam String tableName,
+                            @RequestParam String[] rows, Model model) throws ParseException {
+
+//        RepairSheet repairSheet= repairSheetService.getRepairSheetById(repairId);
+//        Status statusNew = statusService.getStatusById(status);
+//        repairSheet.setStatus(statusNew);
+//        repairSheet.setDescription(description);
+//        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+//        Date newDate = formatter.parse(date);
+//        if(status==5){
+//            repairSheet.setEnd_date(newDate);
+//        }
+//        else {
+//            repairSheet.setConfirm_date(newDate);
+//        }
+//        repairSheetService.updateRepairSheet(repairSheet);
+//
+//        changeStatusOfEquipment(repairSheet.getEquipment(),statusNew, repairSheet.getType_of_maintenance());
+    }
 }

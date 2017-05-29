@@ -64,16 +64,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr>
-                <td><input id="column-name" type="text"></td>
-                <td><select id="column-type" class="form-control form-control-sm">
-                    <option>Small select</option>
-                </select></td>
-                <td><input id="not-null" type="checkbox"></td>
-                <td><input id="auto-inc" type="checkbox"></td>
-                <td><input id="unique" type="checkbox"></td>
-                <td><input id="primary-key" type="checkbox"></td>
-            </tr>
+
             </tbody>
         </table>
         <select class="form-control form-control-sm">
@@ -85,10 +76,11 @@
 
 
 <script>
+    var relationTableStatic;
 
     $(document).ready(function () {
         $('#analize-table-content').show();
-        $('#create-table-content').hide();
+
         var countChecked = function () {
             var n = $("#table-table table input:checked").length;
             var disBoll = true;
@@ -103,7 +95,7 @@
     });
 
     function openResultAnalize(relationTable) {
-
+        relationTableStatic = relationTable;
         $('#table-table').html('<H1>загрузка...</H1>');
         $.ajax({
             userUserType: "GET",
@@ -178,15 +170,50 @@
                 }
             ]
         });
-//        $.ajax({
-//            userUserType: "GET",
-//            contentType: 'application/json',
-//            url: "/repair/" + repairId,
-//            columnType: 'json',
-//            mimeType: 'application/json',
-//        }).done(function (data) {
-//
-//        });
+        var checkedColumn = [];
+        $("#table-table table input:checked").each(function (index) {
+            checkedColumn[index] = this.value;
+        });
+        $('#table-table').html('<H1>загрузка...</H1>');
+        $.ajax({
+            type: "POST",
+            url: "/database/getColumnByTableName/" + relationTableStatic,
+            content: "application/json",
+            dataType: "json",
+            data: {
+                columns: checkedColumn
+            },
+            success: function (data) {
+                var tr;
+                for (var i = 0; i <= data.length; i++) {
+                    tr += '<tr>\
+                        <td><input id="column-name" type="text" value="' + data[i].name + '"></td>\
+                        <td><select id="column-type" class="form-control form-control-sm">\
+                        <option>Small select</option>\
+                        </select></td>\
+                        <td><input id="not-null" type="checkbox"></td>\
+                        <td><input id="auto-inc" type="checkbox"' + (data[i].autoIncrement ? 'checked' : '') + '></td>\
+                        <td><input id="unique" type="checkbox"></td>\
+                        <td><input id="primary-key" type="checkbox"></td>\
+                        </tr>';
+                }
+                $('#create-table-content .table').append(tr);
+            }
+        });
+        $.ajax({
+            type: "POST",
+            url: "/repair/" + repair_id,
+            content: "application/json",
+            dataType: "json",
+            data: {
+                tableName: date,
+                rows: status
+            },
+            success: function (returnData) {
+                alert("Заявка успешно обработана");
+                $(that).dialog("close");
+            }
+        });
     }
 
     function confirmRepair(statusId) {
@@ -337,21 +364,20 @@
         }
     }
 
-    function generateActIn() {
-        $.ajax({
-            userUserType: "POST",
-            url: "/report/repair/act_in/" + repair_id,
-            content: "application/json",
-            columnType: "json",
-            data: {
-                toir_type: toir_type
-            },
-            success: function (returnData) {
-                alert("Акт сформирован");
-                $(that).dialog("close");
-            }
-        });
+    function addRowInTableForAddRows() {
+        var rowTableForAddRows = '<tr id="add-row-table">' +
+            '<td><input id="column-name" type="text"></td>' +
+            '<td><select id="column-type" class="form-control form-control-sm">' +
+            '<option>Small select</option>' +
+            '</select></td>' +
+            '<td><input id="not-null" type="checkbox"></td>'
+        '<td><input id="auto-inc" type="checkbox"></td>'
+        '<td><input id="unique" type="checkbox"></td>'
+        '<td><input id="primary-key" type="checkbox"></td>' +
+        '</tr>';
+        $('#create-table-content .table').append(rowTableForAddRows);
     }
+
     function generateActOut() {
         $.ajax({
             userUserType: "POST",
