@@ -1,13 +1,18 @@
 package ru.jpanda.diplom.normalizedb.core.dbconnection.data;
 
 import ru.jpanda.diplom.normalizedb.core.dbconnection.data.dBTypes.TypeEnum;
+import ru.jpanda.diplom.normalizedb.core.dbconnection.data.dBTypes.types.ColumnType;
+import ru.jpanda.diplom.normalizedb.core.dbconnection.data.dBTypes.types.TypeMySql;
 import ru.jpanda.diplom.normalizedb.core.dbconnection.data.events.Change;
 import ru.jpanda.diplom.normalizedb.core.dbconnection.data.events.ChangeListener;
 import ru.jpanda.diplom.normalizedb.core.dbconnection.data.events.Time;
 
 import javax.xml.bind.annotation.*;
 import java.io.Serializable;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  *
@@ -22,6 +27,7 @@ public class Database implements Serializable {
   private String notes;
   private TypeEnum type;
   private ArrayList<Object> searchResult;
+  private List<ColumnType> columnTypes;
 
   private ArrayList<ForeignKeyConstraint> foreignKeys;
 
@@ -34,6 +40,7 @@ public class Database implements Serializable {
     notes = "";
     type = TypeEnum.MYSQL;
     searchResult = new ArrayList<>();
+    columnTypes = new ArrayList<>(Arrays.asList(TypeMySql.values()));
   }
 
   public ArrayList<RelationSchema> getDatabase() {
@@ -163,6 +170,10 @@ public class Database implements Serializable {
         }
       }
     }
+  }
+
+  public List<ColumnType> getColumnTypes() {
+    return columnTypes;
   }
 
   @Override

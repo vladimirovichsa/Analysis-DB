@@ -184,9 +184,11 @@ public class DataBase {
     @PreAuthorize(value = "!isAnonymous()")
     public
     @ResponseBody
-    List<Attribute> getColumnByTableName(@PathVariable(value = "tableName") String tableName,
+    List<List<?extends Object>> getColumnByTableName(@PathVariable(value = "tableName") String tableName,
                                          Model model, @RequestParam(value = "columns[]") String... columns) {
-        List<Attribute> list = dataBaseService.getConnection().getDatabase().getRelationSchema(tableName).getAttributes();
+        Database database = dataBaseService.getConnection().getDatabase();
+        List<Attribute> list = database.getRelationSchema(tableName).getAttributes();
+        List<List<?extends Object>> obj = new ArrayList<>();
         List<Attribute> attributes = new ArrayList<>();
         for (String s : columns) {
             for (Attribute attribute : list) {
@@ -195,7 +197,9 @@ public class DataBase {
                 }
             }
         }
-        return attributes;
+        obj.add(attributes);
+        obj.add(database.getColumnTypes());
+        return obj;
     }
 
 

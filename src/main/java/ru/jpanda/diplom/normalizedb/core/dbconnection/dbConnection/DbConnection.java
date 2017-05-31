@@ -62,6 +62,7 @@ public abstract class DbConnection {
                 boolean autoIncrement = md.isAutoIncrement(i);
                 Attribute attr = new Attribute(col_name);
                 attr.setArrayIndex(i-1);
+                attr.setColumnType(md.getColumnType(i));
                 String constraints = "";
                 if (nullable == 0) {
                     constraints = constraints + " NOT NULL";

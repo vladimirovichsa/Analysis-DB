@@ -59,7 +59,6 @@
                 <th>Тип</th>
                 <th>Not Null</th>
                 <th>Auto inc</th>
-                <th>Unique</th>
                 <th>Primary key</th>
             </tr>
             </thead>
@@ -67,9 +66,6 @@
 
             </tbody>
         </table>
-        <select class="form-control form-control-sm">
-            <option>Small select</option>
-        </select>
     </div>
 
 </div>
@@ -77,7 +73,7 @@
 
 <script>
     var relationTableStatic;
-
+    var availableTags = [];
     $(document).ready(function () {
         $('#analize-table-content').show();
 
@@ -92,6 +88,9 @@
         countChecked();
 
         $("#table-content").on("click", ".checkboxh", countChecked);
+        $( "#column-type" ).autocomplete({
+            source: availableTags
+        });
     });
 
     function openResultAnalize(relationTable) {
@@ -171,10 +170,11 @@
             ]
         });
         var checkedColumn = [];
+        var bodyTable = $('#create-table-content .table tbody');
         $("#table-table table input:checked").each(function (index) {
             checkedColumn[index] = this.value;
         });
-        $('#table-table').html('<H1>загрузка...</H1>');
+        bodyTable.html('<H1>загрузка...</H1>');
         $.ajax({
             type: "POST",
             url: "/database/getColumnByTableName/" + relationTableStatic,
@@ -185,18 +185,24 @@
             },
             success: function (data) {
                 var tr;
-                for (var i = 0; i <= data.length; i++) {
+                $('#table-name').val('table_name_default');
+                tr += '<tr>\
+                        <td><input id="column-name" type="text" value="id"></td>\
+                        <td><div class="ui-widget"><input id="tags"></div></td>\
+                        <td><input id="not-null" type="checkbox" ></td>\
+                        <td><input id="auto-inc" type="checkbox" checked></td>\
+                        <td><input id="primary-key" type="checkbox" checked></td>\
+                        </tr>';
+                for (var i = 0; i < data.length; i++) {
                     tr += '<tr>\
                         <td><input id="column-name" type="text" value="' + data[i].name + '"></td>\
-                        <td><select id="column-type" class="form-control form-control-sm">\
-                        <option>Small select</option>\
-                        </select></td>\
-                        <td><input id="not-null" type="checkbox"></td>\
-                        <td><input id="auto-inc" type="checkbox"' + (data[i].autoIncrement ? 'checked' : '') + '></td>\
-                        <td><input id="unique" type="checkbox"></td>\
-                        <td><input id="primary-key" type="checkbox"></td>\
+                        <td><div class="ui-widget"><input id="column-type" value="' + data[i].constraints + '"></div></td>\
+                        <td><input id="not-null" type="checkbox" ' + ((data[i].isNullable == 0) ? 'checked' : '' ) + ' ></td>\
+                        <td><input id="auto-inc" type="checkbox" ' + ((data[i].autoIncrement == true )? 'checked' : '' ) + '></td>\
+                        <td><input id="primary-key" type="checkbox" ' + ((data[i].isPrimaryKey == true )? 'checked' : '' ) + ' ></td>\
                         </tr>';
                 }
+                bodyTable.html('');
                 $('#create-table-content .table').append(tr);
             }
         });
