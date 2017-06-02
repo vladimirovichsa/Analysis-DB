@@ -33,7 +33,9 @@ import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Alexey on 30.01.2017.
@@ -184,11 +186,11 @@ public class DataBase {
     @PreAuthorize(value = "!isAnonymous()")
     public
     @ResponseBody
-    List<List<?extends Object>> getColumnByTableName(@PathVariable(value = "tableName") String tableName,
-                                         Model model, @RequestParam(value = "columns[]") String... columns) {
+    Map<String,List<?extends Object>> getColumnByTableName(@PathVariable(value = "tableName") String tableName,
+                                                    Model model, @RequestParam(value = "columns[]") String... columns) {
         Database database = dataBaseService.getConnection().getDatabase();
         List<Attribute> list = database.getRelationSchema(tableName).getAttributes();
-        List<List<?extends Object>> obj = new ArrayList<>();
+        Map<String,List<?extends Object>> obj = new HashMap<>();
         List<Attribute> attributes = new ArrayList<>();
         for (String s : columns) {
             for (Attribute attribute : list) {
@@ -197,8 +199,8 @@ public class DataBase {
                 }
             }
         }
-        obj.add(attributes);
-        obj.add(database.getColumnTypes());
+        obj.put("attribute",attributes);
+        obj.put("columntype",database.getColumnTypes());
         return obj;
     }
 

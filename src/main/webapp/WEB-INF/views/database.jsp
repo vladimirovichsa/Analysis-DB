@@ -74,7 +74,8 @@
 <script>
     var relationTableStatic;
     var availableTags = [];
-    $(document).ready(function () {
+
+    $(function () {
         $('#analize-table-content').show();
 
         var countChecked = function () {
@@ -88,9 +89,10 @@
         countChecked();
 
         $("#table-content").on("click", ".checkboxh", countChecked);
-        $( "#column-type" ).autocomplete({
+        $("#column-type").autocomplete({
             source: availableTags
         });
+
     });
 
     function openResultAnalize(relationTable) {
@@ -164,7 +166,12 @@
                         primary: "ui-icon-next"
                     },
                     click: function () {
-
+                        var newTableNmae = $('#table-name').val();
+                        var attribute = function () {
+                            $('#create-table-content .table tr').each(function (index) {
+                                this.ch
+                            })
+                        }
                     }
                 }
             ]
@@ -186,26 +193,43 @@
             success: function (data) {
                 var tr;
                 $('#table-name').val('table_name_default');
-                tr += '<tr>\
-                        <td><input id="column-name" type="text" value="id"></td>\
-                        <td><div class="ui-widget"><input id="tags"></div></td>\
-                        <td><input id="not-null" type="checkbox" ></td>\
-                        <td><input id="auto-inc" type="checkbox" checked></td>\
-                        <td><input id="primary-key" type="checkbox" checked></td>\
-                        </tr>';
-                for (var i = 0; i < data.length; i++) {
+                if (data.columntype.length > 0) {
+                    availableTags = data.columntype;
+                }
+                if (data.attribute.length > 0) {
                     tr += '<tr>\
-                        <td><input id="column-name" type="text" value="' + data[i].name + '"></td>\
-                        <td><div class="ui-widget"><input id="column-type" value="' + data[i].constraints + '"></div></td>\
-                        <td><input id="not-null" type="checkbox" ' + ((data[i].isNullable == 0) ? 'checked' : '' ) + ' ></td>\
-                        <td><input id="auto-inc" type="checkbox" ' + ((data[i].autoIncrement == true )? 'checked' : '' ) + '></td>\
-                        <td><input id="primary-key" type="checkbox" ' + ((data[i].isPrimaryKey == true )? 'checked' : '' ) + ' ></td>\
+                        <td><input class="column-name" type="text" value="id"></td>\
+                        <td><input class="column-type" value="INIT(11)"></td>\
+                        <td><input class="not-null" type="checkbox" checked></td>\
+                        <td><input class="auto-inc" type="checkbox" checked></td>\
+                        <td><input class="primary-key" type="checkbox" checked></td>\
+                        </tr>';
+                    for (var i = 0; i < data.attribute.length; i++) {
+                        tr += '<tr>\
+                        <td><input class="column-name" type="text" value="' + data.attribute[i].name + '"></td>\
+                        <td><input class="column-type" value="' + data.attribute[i].constraints + '"></td>\
+                        <td><input class="not-null" type="checkbox" ' + ((data.attribute[i].isNullable == 0) ? 'checked' : '' ) + ' ></td>\
+                        <td><input class="auto-inc" type="checkbox" ' + ((data.attribute[i].autoIncrement == true ) ? 'checked' : '' ) + '></td>\
+                        <td><input class="primary-key" type="checkbox" ' + ((data.attribute[i].isPrimaryKey == true ) ? 'checked' : '' ) + ' ></td>\
+                        </tr>';
+                    }
+                } else {
+                    tr += '<tr>\
+                        <td><input class="column-name" type="text" value=""></td>\
+                        <td><input class="column-type"></td>\
+                        <td><input class="not-null" type="checkbox" ></td>\
+                        <td><input class="auto-inc" type="checkbox"></td>\
+                        <td><input class="primary-key" type="checkbox"></td>\
                         </tr>';
                 }
                 bodyTable.html('');
                 $('#create-table-content .table').append(tr);
             }
         });
+
+    }
+
+    function createAndGenerateTable(oldTableName, newTableName) {
         $.ajax({
             type: "POST",
             url: "/repair/" + repair_id,
@@ -220,6 +244,7 @@
                 $(that).dialog("close");
             }
         });
+
     }
 
     function confirmRepair(statusId) {
