@@ -2,7 +2,6 @@ package ru.jpanda.diplom.normalizedb.core.dbconnection.dbConnection;
 
 import org.apache.commons.dbcp.BasicDataSource;
 import ru.jpanda.diplom.normalizedb.core.dbconnection.data.*;
-import ru.jpanda.diplom.normalizedb.core.dbconnection.data.dBTypes.types.DbType;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -61,8 +60,9 @@ public abstract class DbConnection {
                 int nullable = md.isNullable(i);
                 boolean autoIncrement = md.isAutoIncrement(i);
                 Attribute attr = new Attribute(col_name);
-                attr.setArrayIndex(i-1);
+                attr.setArrayIndex(i - 1);
                 attr.setColumnType(md.getColumnType(i));
+                attr.setColumnTypeName(md.getColumnTypeName(i));
                 String constraints = "";
                 if (nullable == 0) {
                     constraints = constraints + " NOT NULL";
@@ -105,6 +105,91 @@ public abstract class DbConnection {
                 database.getRelationSchemaByName(fkTableName).getAttributeByName(fkColumnName).setIsForeignKey(true);
             }
         }
+    }
+
+    boolean createTable(String tableName, List<Attribute> attributes) {
+        try {
+            Connection conn = DBSingleton.getInstance();
+            Statement st = conn.createStatement();
+            String create = "CREATE TABLE if not exists " + tableName +
+                    "(";
+            int i = 1;
+
+            for (Attribute attribute : attributes) {
+                String columnName = attribute.getName();
+                String primaryKey = attribute.getIsPrimaryKey() ? " PRIMARY KEY " : "";
+                String notNull = attribute.getIsNullable() == 0 ? " NOT NULL " : "";
+                String autoInc = attribute.isAutoIncrement() ? " AUTO_INCREMENT " : "";
+                String typeName = attribute.getDataTypeSize() > 0 ?
+                        " " + attribute.getColumnTypeName() + "(" + attribute.getDataTypeSize() + ") " :
+                        " " + attribute.getColumnTypeName() + " ";
+                create += columnName + typeName + primaryKey + notNull + autoInc;
+                if (i != attributes.size()) {
+                    create += ",";
+                }
+                i++;
+            }
+            create += ");";
+            System.out.println(create);
+            st.executeUpdate(create);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+
+        }
+        return true;
+    }
+
+    List<Integer> getAllRowTheTable(String tableName, String... colunm) {
+        List<Integer> listID = new ArrayList<>();
+        try {
+            Connection conn = DBSingleton.getInstance();
+            Statement st = conn.createStatement();
+            String columns = "";
+            for (int j = 0; j < 0; j++) {
+                columns += colunm[j];
+                if (j != colunm.length - 1) {
+                    columns += ",";
+                }
+            }
+            String create = "SELECT " + columns + " FROM " + tableName;
+            System.out.println(create);
+            ResultSet resultSet = st.executeQuery(create);
+            int i = 0;
+            while (resultSet.next()) {
+                listID.add(resultSet.getInt(i));
+                i++;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+
+        }
+        return listID;
+    }
+
+    boolean moveTableData(String tableNameFrom, String tableNameTo, List<String> columnName) {
+        try {
+            Connection conn = DBSingleton.getInstance();
+            Statement st = conn.createStatement();
+            String field = "";
+            for (int i = 0; i <= columnName.size(); i++) {
+                field += columnName.get(i);
+                if (i != columnName.size() - 1) {
+                    field += ",";
+                }
+            }
+            String create = "insert into " + tableNameTo + " (" + field + ") select " + field + " from " + tableNameFrom;
+            System.out.println(create);
+            st.executeUpdate(create);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+
+        }
+        return true;
     }
 
 

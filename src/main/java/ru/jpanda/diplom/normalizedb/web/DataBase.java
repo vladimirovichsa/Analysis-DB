@@ -3,10 +3,8 @@ package ru.jpanda.diplom.normalizedb.web;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -24,11 +22,8 @@ import ru.jpanda.diplom.normalizedb.service.TableTypeService;
 import ru.jpanda.diplom.normalizedb.service.UserService;
 import ru.jpanda.diplom.normalizedb.service.analysis.AnalysisDB;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.UnsupportedEncodingException;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.text.ParseException;
@@ -67,6 +62,21 @@ public class DataBase {
         return "connectionPage";
     }
 
+    @RequestMapping(value = "/connections/connection/{connectionId}", method = RequestMethod.GET,
+            produces = "application/json")
+    @PreAuthorize(value = "!isAnonymous()")
+    public @ResponseBody ConnectionDB getConnection(@PathVariable(value = "connectionId") int connectionId, Model model) {
+        return connectionDBService.getConnectionById(connectionId);
+    }
+
+    @RequestMapping(value = "/connection/databasetype", method = RequestMethod.GET,
+            produces = "application/json")
+    @PreAuthorize(value = "!isAnonymous()")
+    public @ResponseBody
+    List<TableType> getAllDataBaseType(Model model) {
+        return tableTypeService.getAllTabletype();
+    }
+
     @RequestMapping(value = "/connections", method = RequestMethod.POST,
             produces = "application/json")
     @PreAuthorize(value = "!isAnonymous()")
@@ -87,6 +97,33 @@ public class DataBase {
 
         connectionDBService.addConnectionDB(con);
         return "redirect:/connections";
+    }
+
+    @RequestMapping(value = "/connection/update", method = RequestMethod.POST,
+            produces = "application/json")
+    @PreAuthorize(value = "!isAnonymous()")
+    public void updateConnection(
+            @RequestParam int tableTypeId,
+            @RequestParam String dataBase,
+            @RequestParam String host,
+            @RequestParam String username,
+            @RequestParam String password,
+            @RequestParam int port,
+            @RequestParam String url,
+            BindingResult bindingResult) throws NoSuchAlgorithmException, UnsupportedEncodingException {
+        TableType byTableTypeId = tableTypeService.findByTableTypeId(tableTypeId);
+        User user = userService.getUserByLogin(getPrincipal());
+        ConnectionDB con = new ConnectionDB();
+        con.setTable_type_id(byTableTypeId);
+        con.setUserId(user);
+        con.setData_base(dataBase);
+        con.setHost(host);
+        con.setPassword(password);
+        con.setPort(port);
+        con.setUrl(url);
+        con.setUser_name(username);
+
+        connectionDBService.addConnectionDB(con);
     }
 
     @RequestMapping(value = {"/database"}, method = RequestMethod.GET,

@@ -48,7 +48,7 @@ public class Home {
     @Autowired
     private DataBaseService dataBaseService;
 
-    @RequestMapping(value = "/", method = RequestMethod.GET,
+    @RequestMapping(value = "/home", method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public String getStarted(Model model) {
         model.addAttribute("pageTitle", "Главная");
@@ -65,11 +65,9 @@ public class Home {
         return "personalAccount";
     }
 
-    @RequestMapping(value = {"/login"}, method = RequestMethod.GET,
+    @RequestMapping(value = {"","/", "/login"}, method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public String getAuntefication(Model model) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-
         return "loginPage";
     }
 

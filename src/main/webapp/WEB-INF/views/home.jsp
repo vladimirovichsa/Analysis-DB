@@ -68,3 +68,6 @@
   <%--</script>--%>
 
       <div id="charts" ></div>
+<c:forEach items="${listTypeOfMaintenance}" var="maintenance">
+      <option value="${maintenance.type_of_maintenance_id}">${maintenance.type_of_maintenance_name}</option>
+</c:forEach>

@@ -20,6 +20,7 @@ public class Attribute implements Serializable {
   private String constraints;
   private int isNullable;
   private int columnType;
+  private String columnTypeName;
   private int dataTypeSize;
 
   private boolean normal = false;
@@ -165,6 +166,14 @@ public class Attribute implements Serializable {
 
   public void setCritical(boolean critical) {
     this.critical = critical;
+  }
+
+  public String getColumnTypeName() {
+    return columnTypeName;
+  }
+
+  public void setColumnTypeName(String columnTypeName) {
+    this.columnTypeName = columnTypeName;
   }
 
   @JsonIgnore

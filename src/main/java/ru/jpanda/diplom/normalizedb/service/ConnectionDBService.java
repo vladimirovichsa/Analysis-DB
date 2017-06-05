@@ -20,7 +20,7 @@ public class ConnectionDBService{
     @Autowired
     private ConnectionDBRepository connectionDBRepository;
 
-    public ConnectionDB findById(int id) {
+    public ConnectionDB getConnectionById(int id) {
         return this.connectionDBRepository.findById(id);
     }
 
@@ -29,6 +29,9 @@ public class ConnectionDBService{
     }
 
     public void delete(ConnectionDB connection) {
+        this.connectionDBRepository.delete(connection);
+    }
+    public void update(ConnectionDB connection) {
         this.connectionDBRepository.delete(connection);
     }
 
