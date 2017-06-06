@@ -3,9 +3,6 @@ package ru.jpanda.diplom.normalizedb.core.dbconnection.data;
 import ru.jpanda.diplom.normalizedb.core.dbconnection.data.dBTypes.TypeEnum;
 import ru.jpanda.diplom.normalizedb.core.dbconnection.data.dBTypes.types.ColumnType;
 import ru.jpanda.diplom.normalizedb.core.dbconnection.data.dBTypes.types.TypeMySql;
-import ru.jpanda.diplom.normalizedb.core.dbconnection.data.events.Change;
-import ru.jpanda.diplom.normalizedb.core.dbconnection.data.events.ChangeListener;
-import ru.jpanda.diplom.normalizedb.core.dbconnection.data.events.Time;
 
 import javax.xml.bind.annotation.*;
 import java.io.Serializable;

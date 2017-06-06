@@ -45,7 +45,7 @@
 </div>
 <div id="analize-table-dialog" style="overflow-x: auto;">
     <div id="analize-table-content"></div>
-    <div id="create-table-content">
+    <div id="create-table-content" style="display: none">
         <div class="form-group row">
             <label for="table-name" class="col-sm-3 col-form-label">Название таблицы</label>
             <div class="col-sm-8">

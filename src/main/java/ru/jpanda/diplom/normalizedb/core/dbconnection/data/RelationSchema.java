@@ -1,7 +1,5 @@
 package ru.jpanda.diplom.normalizedb.core.dbconnection.data;
 
-import ru.jpanda.diplom.normalizedb.core.dbconnection.data.events.Change;
-import ru.jpanda.diplom.normalizedb.core.dbconnection.data.events.ChangeListener;
 
 import javax.xml.bind.annotation.*;
 import java.io.Serializable;
