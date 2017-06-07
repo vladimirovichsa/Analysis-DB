@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import ru.jpanda.diplom.normalizedb.core.dbconnection.data.CreateTable;
 import ru.jpanda.diplom.normalizedb.core.dbconnection.data.Attribute;
 import ru.jpanda.diplom.normalizedb.core.dbconnection.data.Database;
 import ru.jpanda.diplom.normalizedb.core.dbconnection.data.RelationSchema;
@@ -22,6 +23,7 @@ import ru.jpanda.diplom.normalizedb.service.TableTypeService;
 import ru.jpanda.diplom.normalizedb.service.UserService;
 import ru.jpanda.diplom.normalizedb.service.analysis.AnalysisDB;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
@@ -65,7 +67,8 @@ public class DataBase {
     @RequestMapping(value = "/connections/connection/{connectionId}", method = RequestMethod.GET,
             produces = "application/json")
     @PreAuthorize(value = "!isAnonymous()")
-    public @ResponseBody ConnectionDB getConnection(@PathVariable(value = "connectionId") int connectionId, Model model) {
+    public @ResponseBody
+    ConnectionDB getConnection(@PathVariable(value = "connectionId") int connectionId, Model model) {
         return connectionDBService.getConnectionById(connectionId);
     }
 
@@ -97,6 +100,14 @@ public class DataBase {
 
         connectionDBService.addConnectionDB(con);
         return "redirect:/connections";
+    }
+
+    @RequestMapping(value = "/database/createdatabase", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize(value = "!isAnonymous()")
+    public @ResponseBody
+    String createDataBase(@RequestBody CreateTable obj, HttpServletResponse response) {
+        CreateTable obj1 = obj;
+        return null;
     }
 
     @RequestMapping(value = "/connection/update", method = RequestMethod.POST,
@@ -223,21 +234,21 @@ public class DataBase {
     @PreAuthorize(value = "!isAnonymous()")
     public
     @ResponseBody
-    Map<String,List<?extends Object>> getColumnByTableName(@PathVariable(value = "tableName") String tableName,
-                                                    Model model, @RequestParam(value = "columns[]") String... columns) {
+    Map<String, List<? extends Object>> getColumnByTableName(@PathVariable(value = "tableName") String tableName,
+                                                             Model model, @RequestParam(value = "columns[]") String... columns) {
         Database database = dataBaseService.getConnection().getDatabase();
         List<Attribute> list = database.getRelationSchema(tableName).getAttributes();
-        Map<String,List<?extends Object>> obj = new HashMap<>();
+        Map<String, List<? extends Object>> obj = new HashMap<>();
         List<Attribute> attributes = new ArrayList<>();
         for (String s : columns) {
             for (Attribute attribute : list) {
-                if(attribute.getArrayIndex() == Integer.parseInt(s)){
+                if (attribute.getArrayIndex() == Integer.parseInt(s)) {
                     attributes.add(attribute);
                 }
             }
         }
-        obj.put("attribute",attributes);
-        obj.put("columntype",database.getColumnTypes());
+        obj.put("attribute", attributes);
+        obj.put("columntype", database.getColumnTypes());
         return obj;
     }
 

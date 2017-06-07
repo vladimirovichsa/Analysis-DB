@@ -166,12 +166,33 @@
                         primary: "ui-icon-next"
                     },
                     click: function () {
-                        var newTableNmae = $('#table-name').val();
-                        var attribute = function () {
-                            $('#create-table-content .table tr').each(function (index) {
-                                this.ch
-                            })
-                        }
+                        var newTableName = $('#table-name').val();
+                        var obj = {};
+                        var columns = [];
+                        $('#create-table-content .table tbody tr').each(function (index) {
+                            var column = {};
+                            column.name = this.cells[0].firstChild.value;
+                            column.columnTypeName = this.cells[1].firstChild.value;
+                            column.isNullable = this.cells[2].firstChild.checked == true ? 0 : 1;
+                            column.autoIncrement = this.cells[3].firstChild.checked;
+                            column.isPrimaryKey = this.cells[4].firstChild.checked;
+                            columns[index] = column;
+                        });
+                        obj.tableName = newTableName;
+                        obj.listAttribute = columns;
+                        $.ajax({
+                            type: "POST",
+                            url: "/database/createdatabase",
+                            contentType: 'application/json',
+                            dataType: "json",
+                            data: JSON.stringify(obj),
+                            success: function (data) {
+                                if(){
+
+                                }
+                            }
+                        });
+
                     }
                 }
             ]
