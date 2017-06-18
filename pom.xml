@@ -285,6 +285,11 @@
             <artifactId>maven-dependency-plugin</artifactId>
             <version>2.9</version>
         </dependency>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>9.4.1212</version>
+        </dependency>
     </dependencies>
 
     <profiles>
@@ -292,9 +297,9 @@
             <id>mysql</id>
             <dependencies>
                 <dependency>
-                    <groupId>mysql</groupId>
-                    <artifactId>mysql-connector-java</artifactId>
-                    <version>5.1.6</version>
+                    <groupId>org.postgresql</groupId>
+                    <artifactId>postgresql</artifactId>
+                    <version>9.4.1212</version>
                 </dependency>
                 <dependency>
                     <groupId>org.apache.tomcat</groupId>
@@ -355,9 +360,9 @@
             </build>
             <dependencies>
                 <dependency>
-                    <groupId>mysql</groupId>
-                    <artifactId>mysql-connector-java</artifactId>
-                    <version>5.1.6</version>
+                    <groupId>org.postgresql</groupId>
+                    <artifactId>postgresql</artifactId>
+                    <version>9.4.1212</version>
                 </dependency>
                 <dependency>
                     <groupId>org.apache.tomcat</groupId>

@@ -21,7 +21,7 @@ public class WorkflowHistory {
 
     @ManyToOne()
     @JoinColumn(name = "user_id")
-    private User userId;
+    private Users userId;
     
     private String action;
     
@@ -39,11 +39,11 @@ public class WorkflowHistory {
         this.id = id;
     }
 
-    public User getUserId() {
+    public Users getUserId() {
         return userId;
     }
 
-    public void setUserId(User user) {
+    public void setUserId(Users user) {
         this.userId = user;
     }
 

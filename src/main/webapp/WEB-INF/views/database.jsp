@@ -152,6 +152,7 @@
     }
 
     function createTable() {
+        var oldAttribyte;
         jQuery("#create-table-content").dialog({
             title: "Создание таблицы",
             width: 800,
@@ -180,6 +181,7 @@
                         });
                         obj.tableName = newTableName;
                         obj.listAttribute = columns;
+                        obj.listOldAttribute = oldAttribyte;
                         $.ajax({
                             type: "POST",
                             url: "/database/createdatabase",
@@ -187,9 +189,9 @@
                             dataType: "json",
                             data: JSON.stringify(obj),
                             success: function (data) {
-                                if(){
-
-                                }
+//                                if(){
+//
+//                                }
                             }
                         });
 
@@ -218,6 +220,7 @@
                     availableTags = data.columntype;
                 }
                 if (data.attribute.length > 0) {
+                    oldAttribyte = data.attribute;
                     tr += '<tr>\
                         <td><input class="column-name" type="text" value="id"></td>\
                         <td><input class="column-type" value="INIT(11)"></td>\

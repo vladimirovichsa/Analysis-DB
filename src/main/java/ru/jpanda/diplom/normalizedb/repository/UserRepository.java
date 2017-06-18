@@ -1,17 +1,18 @@
 package ru.jpanda.diplom.normalizedb.repository;
 
 import org.springframework.data.repository.CrudRepository;
-import ru.jpanda.diplom.normalizedb.domain.User;
+import ru.jpanda.diplom.normalizedb.domain.Users;
 
 import java.util.List;
 
 /**
  * Created by Alexey on 27.03.2017.
  */
-public interface UserRepository extends CrudRepository<User, Integer> {
+public interface UserRepository extends CrudRepository<Users, Integer> {
 
-    User findById(int id);
-    User findByLogin(String login);
-    User save(User user);
-    List<User> findAll();
+    Users findById(int id);
+    Users findByLogin(String login);
+    Users save(Users user);
+
+    List<Users> findAll();
 }

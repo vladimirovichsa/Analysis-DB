@@ -5,9 +5,7 @@ import org.hibernate.annotations.Proxy;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.*;
-import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.io.Serializable;
 
 /**
@@ -44,7 +42,7 @@ public class ConnectionDB implements Serializable{
 
     @OneToOne()
     @JoinColumn(name = "user_id")
-    private User userId;
+    private Users userId;
 
     @OneToOne()
     @JoinColumn(name = "table_type_id")
@@ -98,11 +96,11 @@ public class ConnectionDB implements Serializable{
         this.password = password;
     }
 
-    public User getUserId() {
+    public Users getUserId() {
         return userId;
     }
 
-    public void setUserId(User userId) {
+    public void setUserId(Users userId) {
         this.userId = userId;
     }
 

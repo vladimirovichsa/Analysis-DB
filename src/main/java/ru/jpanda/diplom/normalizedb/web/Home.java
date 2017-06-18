@@ -11,15 +11,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import ru.jpanda.diplom.normalizedb.core.dbconnection.data.Database;
-import ru.jpanda.diplom.normalizedb.core.dbconnection.data.RelationSchema;
-import ru.jpanda.diplom.normalizedb.core.dbconnection.dbConnection.DbConnection;
-import ru.jpanda.diplom.normalizedb.service.analysis.*;
 import ru.jpanda.diplom.normalizedb.domain.*;
-import ru.jpanda.diplom.normalizedb.service.ConnectionDBService;
-import ru.jpanda.diplom.normalizedb.service.DataBaseService;
-import ru.jpanda.diplom.normalizedb.service.TableTypeService;
-import ru.jpanda.diplom.normalizedb.service.UserService;
+import ru.jpanda.diplom.normalizedb.service.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -27,7 +20,6 @@ import javax.validation.Valid;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -38,6 +30,9 @@ import java.util.List;
 public class Home {
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private UserTypeService userTypeService;
 
     @Autowired
     private ConnectionDBService connectionDBService;
@@ -52,7 +47,7 @@ public class Home {
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public String getStarted(Model model) {
         model.addAttribute("pageTitle", "Главная");
-        User userByLogin = userService.getUserByLogin(getPrincipal());
+        Users userByLogin = userService.getUserByLogin(getPrincipal());
         return "homePage";
     }
 
@@ -61,11 +56,29 @@ public class Home {
     @PreAuthorize("!isAnonymous()")
     public String getPersonalAccount(Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-
+        model.addAttribute("user", userService.getUserByLogin(getPrincipal()));
+        model.addAttribute("userType", userTypeService.getUserType());
         return "personalAccount";
     }
 
-    @RequestMapping(value = {"","/", "/login"}, method = RequestMethod.GET,
+    @RequestMapping(value = {"/lk"}, method = RequestMethod.POST,
+            produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @PreAuthorize("!isAnonymous()")
+    public String getUpdatePersonalInfo(@RequestParam int userTypeId, @Valid Users user, BindingResult bindingResult) throws NoSuchAlgorithmException, UnsupportedEncodingException {
+        user.setId(userService.getUserByLogin(getPrincipal()).getId());
+        user.setType_id(userTypeService.getUserType(userTypeId));
+        if (bindingResult.hasErrors()) {
+            return "redirect:/lkq";
+        }
+        MessageDigest md = MessageDigest.getInstance("SHA-256");
+        md.update(user.getPassword().getBytes("UTF-8"));
+        byte[] digest = md.digest();
+        user.setPassword(String.format("%064x", new java.math.BigInteger(1, digest)));
+        userService.addUser(user);
+        return "redirect:/lk";
+    }
+
+    @RequestMapping(value = {"", "/", "/login"}, method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public String getAuntefication(Model model) {
         return "loginPage";
@@ -76,7 +89,7 @@ public class Home {
     @PreAuthorize("!isAnonymous()")
     public
     @ResponseBody
-    List<User> getUsers(Model model) {
+    List<Users> getUsers(Model model) {
         return userService.getUsers();
     }
 
@@ -84,7 +97,7 @@ public class Home {
             produces = "application/json")
     @PreAuthorize("!isAnonymous()")
     public String getUsersView(Model model) {
-        model.addAttribute("userForm", new User());
+        model.addAttribute("userForm", new Users());
         model.addAttribute("usersAll", userService.getUsers());
         model.addAttribute("current_user", userService.getUserByLogin(getPrincipal()).getLast_name() + " " +
                 userService.getUserByLogin(getPrincipal()).getFirst_name());
@@ -94,7 +107,7 @@ public class Home {
     @RequestMapping(value = "/users", method = RequestMethod.POST,
             produces = "application/json")
     @PreAuthorize(value = "!isAnonymous()")
-    public String addUsers(@Valid User user, BindingResult bindingResult) throws NoSuchAlgorithmException, UnsupportedEncodingException {
+    public String addUsers(@Valid Users user, BindingResult bindingResult) throws NoSuchAlgorithmException, UnsupportedEncodingException {
 
         if (bindingResult.hasErrors()) {
             return "redirect:/users";
@@ -111,7 +124,7 @@ public class Home {
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @PreAuthorize(value = "!isAnonymous()")
     public void getUserInfo(Model model, HttpServletRequest request) {
-        User user = userService.getUserByLogin(getPrincipal());
+        Users user = userService.getUserByLogin(getPrincipal());
         model.addAttribute("userDetails", user);
         request.getRequestDispatcher("userdetais.jsp");
 //        return "userDetails";

@@ -64,7 +64,12 @@
           <element id="library" level="project" name="Maven: commons-beanutils:commons-beanutils:1.9.0" />
           <element id="library" level="project" name="Maven: commons-collections:commons-collections:3.2.2" />
           <element id="library" level="project" name="Maven: commons-digester:commons-digester:2.1" />
-          <element id="library" level="project" name="Maven: com.lowagie:itext:2.1.7.js5-SNAPSHOT" />
+          <element id="file-copy" path="$MAVEN_REPOSITORY$/com/lowagie/itext/2.1.7.js5-SNAPSHOT/itext-2.1.7.js5-20160118.162824-1.jar" output-file-name="itext-2.1.7.js5-SNAPSHOT.jar" />
+          <element id="library" level="project" name="Maven: bouncycastle:bcmail-jdk14:138" />
+          <element id="library" level="project" name="Maven: bouncycastle:bcprov-jdk14:138" />
+          <element id="library" level="project" name="Maven: org.bouncycastle:bctsp-jdk14:1.38" />
+          <element id="library" level="project" name="Maven: org.bouncycastle:bcprov-jdk14:1.38" />
+          <element id="library" level="project" name="Maven: org.bouncycastle:bcmail-jdk14:1.38" />
           <element id="library" level="project" name="Maven: org.jfree:jcommon:1.0.23" />
           <element id="library" level="project" name="Maven: org.jfree:jfreechart:1.0.19" />
           <element id="library" level="project" name="Maven: org.eclipse.jdt.core.compiler:ecj:4.3.1" />
@@ -193,7 +198,6 @@
           <element id="library" level="project" name="Maven: org.apache.maven.shared:maven-invoker:2.1.1" />
           <element id="library" level="project" name="Maven: commons-lang:commons-lang:2.6" />
           <element id="library" level="project" name="Maven: classworlds:classworlds:1.1" />
-          <element id="library" level="project" name="Maven: mysql:mysql-connector-java:5.1.6" />
         </element>
       </element>
       <element id="directory" name="META-INF">

@@ -54,7 +54,7 @@
             columnType: 'json',
         }).done(function (data) {
             if (data.attributes.length > 0) {
-                var div = '<div><button class="btn btn-primary" onclick="openResultAnalize(\''+relationTable+'\')">Анализировать</button></div>';
+                var div = '<div><button class="btn btn-primary" onclick="openResultAnalize(\''+relationTable+'\');">Анализировать</button></div>';
                 var table = div + "<div id=\"table-table\"><table class=\"table table-hover\"><thead><tr></tr></thead>\
                 <tbody>\
                 </tbody>\

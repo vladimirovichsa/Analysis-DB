@@ -9,6 +9,7 @@ public class CreateTable {
 
     private String tableName;
     private ArrayList<Attribute> listAttribute;
+    private ArrayList<Attribute> listOldAttribute;
 //    private boolean autoIncrement;
 //    private String name;
 //    private boolean isPrimaryKey;
@@ -28,6 +29,14 @@ public class CreateTable {
 
     public ArrayList<Attribute> getListAttribute() {
         return listAttribute;
+    }
+
+    public ArrayList<Attribute> getListOldAttribute() {
+        return listOldAttribute;
+    }
+
+    public void setListOldAttribute(ArrayList<Attribute> listOldAttribute) {
+        this.listOldAttribute = listOldAttribute;
     }
 
     public void setListAttribute(ArrayList<Attribute> listAttribute) {

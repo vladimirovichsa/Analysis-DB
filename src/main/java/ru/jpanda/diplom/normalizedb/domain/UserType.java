@@ -16,18 +16,18 @@ public class UserType {
     @Id
     @GenericGenerator(name = "kaugen", strategy = "increment")
     @GeneratedValue(generator = "kaugen")
-    @Column(name = "type_id")
-    private int type_id;
+    @Column(name = "id")
+    private int id;
 
     @Column(name = "type")
     private String type = Type.USER.getUserType();
 
     public int getId() {
-        return type_id;
+        return id;
     }
 
     public void setId(int id) {
-        this.type_id = id;
+        this.id = id;
     }
 
     public String getType() {
@@ -45,13 +45,13 @@ public class UserType {
 
         UserType userUserType = (UserType) o;
 
-        if (type_id != userUserType.type_id) return false;
+        if (id != userUserType.id) return false;
         return type != null ? type.equals(userUserType.type) : userUserType.type == null;
     }
 
     @Override
     public int hashCode() {
-        int result = type_id;
+        int result = id;
         result = 31 * result + (type != null ? type.hashCode() : 0);
         return result;
     }

@@ -5,14 +5,15 @@ import org.hibernate.annotations.Proxy;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 /**
  * Created by Alexey on 20.03.2017.
  */
 @Entity
-@Table(name = "user")
+@Table(name = "users")
 @Proxy(lazy = false)
-public class User {
+public class Users implements Serializable{
 
     @Id
     @GenericGenerator(name = "kaugen", strategy = "increment")
@@ -35,7 +36,7 @@ public class User {
     @NotEmpty(message = "Пожалуйтса введите email")
     private String email;
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne()
     @JoinColumn(name = "type_id")
     private UserType type_id;
 
@@ -87,12 +88,12 @@ public class User {
         this.email = email;
     }
 
-    public UserType getType() {
+    public UserType getType_id() {
         return type_id;
     }
 
-    public void setType(UserType userType) {
-        this.type_id = userType;
+    public void setType_id(UserType type_id) {
+        this.type_id = type_id;
     }
 
     @Override
@@ -100,7 +101,7 @@ public class User {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        User user = (User) o;
+        Users user = (Users) o;
 
         if (id != user.id) return false;
         if (login != null ? !login.equals(user.login) : user.login != null) return false;

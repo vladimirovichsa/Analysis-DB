@@ -144,11 +144,11 @@
                     <td><br/></td>
                 </tr>
                 <tr>
-                        <%--<form:select path="type_id" class="form-control"  name="maintenanceType" id="work_hour2">--%>
-                        <%--<c:forEach items="${userForm.type}" var="item">--%>
-                        <%--<form:option value="${item.getId}">${item.getType}</form:option>--%>
-                        <%--</c:forEach>--%>
-                        <%--</form:select>--%>
+                        <form:select path="type_id" class="form-control"  name="maintenanceType" id="work_hour2">
+                        <c:forEach items="${userForm.type}" var="item">
+                        <form:option value="${item.getId}">${item.getType}</form:option>
+                        </c:forEach>
+                        </form:select>
                 </tr>
                 <tr>
                     <td><br/></td>

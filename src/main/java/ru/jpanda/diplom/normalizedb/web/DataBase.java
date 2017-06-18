@@ -16,7 +16,7 @@ import ru.jpanda.diplom.normalizedb.core.dbconnection.data.RelationSchema;
 import ru.jpanda.diplom.normalizedb.core.dbconnection.dbConnection.DbConnection;
 import ru.jpanda.diplom.normalizedb.domain.ConnectionDB;
 import ru.jpanda.diplom.normalizedb.domain.TableType;
-import ru.jpanda.diplom.normalizedb.domain.User;
+import ru.jpanda.diplom.normalizedb.domain.Users;
 import ru.jpanda.diplom.normalizedb.service.ConnectionDBService;
 import ru.jpanda.diplom.normalizedb.service.DataBaseService;
 import ru.jpanda.diplom.normalizedb.service.TableTypeService;
@@ -57,7 +57,7 @@ public class DataBase {
             produces = "application/json")
     @PreAuthorize(value = "!isAnonymous()")
     public String getConnectionsView(Model model) {
-        User user = userService.getUserByLogin(getPrincipal());
+        Users user = userService.getUserByLogin(getPrincipal());
         model.addAttribute("connectionForm", new ConnectionDB());
         model.addAttribute("connectionAll", connectionDBService.getAllConnectionByUserID(user));
         model.addAttribute("tableType", tableTypeService.getAllTabletype());
@@ -87,7 +87,7 @@ public class DataBase {
             @RequestParam int tableTypeId,
             @Valid ConnectionDB connectionDB, BindingResult bindingResult) throws NoSuchAlgorithmException, UnsupportedEncodingException {
         TableType byTableTypeId = tableTypeService.findByTableTypeId(tableTypeId);
-        User user = userService.getUserByLogin(getPrincipal());
+        Users user = userService.getUserByLogin(getPrincipal());
         ConnectionDB con = new ConnectionDB();
         con.setTable_type_id(byTableTypeId);
         con.setUserId(user);
@@ -107,6 +107,7 @@ public class DataBase {
     public @ResponseBody
     String createDataBase(@RequestBody CreateTable obj, HttpServletResponse response) {
         CreateTable obj1 = obj;
+
         return null;
     }
 
@@ -123,7 +124,7 @@ public class DataBase {
             @RequestParam String url,
             BindingResult bindingResult) throws NoSuchAlgorithmException, UnsupportedEncodingException {
         TableType byTableTypeId = tableTypeService.findByTableTypeId(tableTypeId);
-        User user = userService.getUserByLogin(getPrincipal());
+        Users user = userService.getUserByLogin(getPrincipal());
         ConnectionDB con = new ConnectionDB();
         con.setTable_type_id(byTableTypeId);
         con.setUserId(user);
