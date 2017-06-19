@@ -120,6 +120,29 @@ public class Home {
         return "redirect:/users";
     }
 
+    @RequestMapping(value = "/users/allusers", method = RequestMethod.GET,
+            produces = "application/json")
+    @PreAuthorize(value = "!isAnonymous()")
+    public @ResponseBody
+    List<User> getHistory(Model model){
+        return userService.getUsers();
+    }
+
+    @RequestMapping(value = "/users/history", method = RequestMethod.POST,
+            produces = "application/json")
+    @PreAuthorize(value = "!isAnonymous()")
+    public String getHistoryUser(@RequestParam int userid){
+        return "redirect:/users/" + userid + "/history";
+    }
+
+    @RequestMapping(value = "/users/{userId}/history", method = RequestMethod.POST,
+            produces = "application/json")
+    @PreAuthorize(value = "!isAnonymous()")
+    public String getHistoryUserById(@PathVariable(value = "userId") int userId, Model model){
+        userService.getUserById(userId);
+        return "historyPage";
+    }
+
     @RequestMapping(value = {"/userdetais"}, method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @PreAuthorize(value = "!isAnonymous()")
