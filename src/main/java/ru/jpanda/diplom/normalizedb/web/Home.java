@@ -11,10 +11,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import ru.jpanda.diplom.normalizedb.core.dbconnection.data.Database;
-import ru.jpanda.diplom.normalizedb.core.dbconnection.data.RelationSchema;
-import ru.jpanda.diplom.normalizedb.core.dbconnection.dbConnection.DbConnection;
-import ru.jpanda.diplom.normalizedb.service.analysis.*;
 import ru.jpanda.diplom.normalizedb.domain.*;
 import ru.jpanda.diplom.normalizedb.service.ConnectionDBService;
 import ru.jpanda.diplom.normalizedb.service.DataBaseService;
@@ -27,7 +23,6 @@ import javax.validation.Valid;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -105,6 +100,29 @@ public class Home {
         user.setPassword(String.format("%064x", new java.math.BigInteger(1, digest)));
         userService.addUser(user);
         return "redirect:/users";
+    }
+
+    @RequestMapping(value = "/users/history", method = RequestMethod.GET,
+            produces = "application/json")
+    @PreAuthorize(value = "!isAnonymous()")
+    public @ResponseBody
+    List<User> getHistory(Model model){
+        return userService.getUsers();
+    }
+
+    @RequestMapping(value = "/users/history", method = RequestMethod.POST,
+            produces = "application/json")
+    @PreAuthorize(value = "!isAnonymous()")
+    public String getHistoryUser(@RequestParam int userid){
+        return "redirect:/users/" + userid + "/history";
+    }
+
+    @RequestMapping(value = "/users/{userId}/history", method = RequestMethod.POST,
+            produces = "application/json")
+    @PreAuthorize(value = "!isAnonymous()")
+    public String getHistoryUserById(@PathVariable(value = "userId") int userId, Model model){
+        userService.getUserById(userId);
+        return "historyPage";
     }
 
     @RequestMapping(value = {"/userdetais"}, method = RequestMethod.GET,

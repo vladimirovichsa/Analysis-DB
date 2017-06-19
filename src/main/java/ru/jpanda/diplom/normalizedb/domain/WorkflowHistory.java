@@ -4,6 +4,7 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Proxy;
 
 import javax.persistence.*;
+import java.util.Date;
 
 /**
  * Created by Alexey on 20.03.2017.
@@ -31,6 +32,8 @@ public class WorkflowHistory {
     @JoinColumn(name = "serialization_id")
     private Serialization serialization;
 
+    private Date dateTime;
+
     public int getId() {
         return id;
     }
@@ -57,6 +60,22 @@ public class WorkflowHistory {
 
     public int getStatus() {
         return status;
+    }
+
+    public Serialization getSerialization() {
+        return serialization;
+    }
+
+    public void setSerialization(Serialization serialization) {
+        this.serialization = serialization;
+    }
+
+    public Date getDateTime() {
+        return dateTime;
+    }
+
+    public void setDateTime(Date dateTime) {
+        this.dateTime = dateTime;
     }
 
     public void setStatus(int status) {

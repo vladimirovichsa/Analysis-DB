@@ -53,6 +53,9 @@
     <definition name="connectionPage" extends="template">
         <put-attribute name="body" value="/WEB-INF/views/connection_setting.jsp"/>
     </definition>
+    <definition name="historyPage" extends="template">
+        <put-attribute name="body" value="/WEB-INF/views/history.jsp"/>
+    </definition>
 
     <definition name="dataBasePage" extends="template-database">
         <put-attribute name="body" value="/WEB-INF/views/database.jsp"/>

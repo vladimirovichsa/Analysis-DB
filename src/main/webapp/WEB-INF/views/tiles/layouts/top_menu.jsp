@@ -33,7 +33,16 @@
                 <%--</ul>--%>
                 <%--</li>--%>
                 <security:authorize access="hasRole('ROLE_ADMIN')">
-                    <li><a href="<c:url value="/users"/>">Пользователи</a></li>
+                    <li><a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                        Пользователи<span class="caret"></span></a>
+                        <ul class="dropdown-menu" style="padding: 15px; ">
+                            <li><a href="<c:url value="/users"/>" >Список пользователей</a></li>
+                            <li><a href="#" onclick="openHistoryDialog();" >Истории пользователей</a></li>
+                        </ul>
+                    </li>
+                </security:authorize>
+                <security:authorize access="hasRole('ROLE_USER')">
+                    <li><a href="<c:url value="/login"/>">Истории</a></li>
                 </security:authorize>
                 <security:authorize access="!isAnonymous()">
                     <li>
