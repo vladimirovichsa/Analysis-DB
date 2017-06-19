@@ -49,7 +49,7 @@
         $.ajax({
             type: "GET",
             contentType: 'application/json',
-            url: "/users/history",
+            url: "/users/allusers",
             columnType: 'json',
         }).done(function (data) {
             if(data.length > 0){

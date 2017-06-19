@@ -102,7 +102,7 @@ public class Home {
         return "redirect:/users";
     }
 
-    @RequestMapping(value = "/users/history", method = RequestMethod.GET,
+    @RequestMapping(value = "/users/allusers", method = RequestMethod.GET,
             produces = "application/json")
     @PreAuthorize(value = "!isAnonymous()")
     public @ResponseBody
