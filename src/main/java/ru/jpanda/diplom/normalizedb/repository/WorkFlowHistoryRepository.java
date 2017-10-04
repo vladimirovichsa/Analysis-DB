@@ -13,7 +13,7 @@ import java.util.List;
 public interface WorkFlowHistoryRepository extends CrudRepository<WorkflowHistory, Integer> {
 
     WorkflowHistory findById(int id);
-    WorkflowHistory findByUserId(Users users);
+    List<WorkflowHistory> findAllByUserId(Users users);
     WorkflowHistory save(WorkflowHistory workflowHistory);
     List<WorkflowHistory> findAll();
 }

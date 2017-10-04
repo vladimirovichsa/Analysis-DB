@@ -13,9 +13,13 @@ public class DbConnectionFactory {
   public static DbConnection getConnection(TypeEnum type, String user, String pwd, String address) throws SQLException {
     switch (type) {
       case MYSQL:
-        return new MYSQLConnection(user, pwd, address);
+        MYSQLConnection mysqlConnection = new MYSQLConnection(user, pwd, address);
+        mysqlConnection.getDatabase().setType(type);
+        return mysqlConnection;
       case POSTGRES:
-        return new PostgresConnection(user, pwd, address);
+        PostgresConnection postgresConnection = new PostgresConnection(user, pwd, address);
+        postgresConnection.getDatabase().setType(type);
+        return postgresConnection;
      /* case MSDB:
         return null;
       case ORACLE:

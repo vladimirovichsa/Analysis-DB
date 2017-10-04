@@ -8,8 +8,10 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.transaction.annotation.Transactional;
 import ru.jpanda.diplom.normalizedb.domain.Users;
+import ru.jpanda.diplom.normalizedb.domain.WorkflowHistory;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -20,6 +22,9 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private WorkFlowHistoryService workFlowHistoryService;
+
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String login)
             throws UsernameNotFoundException {
@@ -29,11 +34,19 @@ public class CustomUserDetailsService implements UserDetailsService {
             System.out.println("Users #1" + userService.getUsers().get(0).getLogin());
         }
         System.out.println("Users : " + user + "login: " + login);
+        WorkflowHistory workflowHistory = new WorkflowHistory();
+        workflowHistory.setAction("Вход в систему САНРБД" );
+
         if (user == null) {
             System.out.println("Users not found");
+            workflowHistory.setStatus("Не выполнено");
             throw new UsernameNotFoundException("Username not found");
+        }else {
+            workflowHistory.setStatus("Выполнено");
         }
-
+        workflowHistory.setDateTime(new Date());
+        workflowHistory.setUserId(user);
+        workFlowHistoryService.addHistory(workflowHistory);
         return new org.springframework.security.core.userdetails.User(user.getLogin(), user.getPassword(),
                 true, true, true, true, getGrantedAuthorities(user));
     }

@@ -20,6 +20,7 @@ import javax.validation.Valid;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -32,6 +33,9 @@ public class Home {
     private UserService userService;
 
     @Autowired
+    private WorkFlowHistoryService workFlowHistoryService;
+
+    @Autowired
     private UserTypeService userTypeService;
 
     @Autowired
@@ -42,14 +46,6 @@ public class Home {
 
     @Autowired
     private DataBaseService dataBaseService;
-
-    @RequestMapping(value = "/home", method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public String getStarted(Model model) {
-        model.addAttribute("pageTitle", "Главная");
-        Users userByLogin = userService.getUserByLogin(getPrincipal());
-        return "homePage";
-    }
 
     @RequestMapping(value = {"/lk"}, method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -68,13 +64,19 @@ public class Home {
         user.setId(userService.getUserByLogin(getPrincipal()).getId());
         user.setType_id(userTypeService.getUserType(userTypeId));
         if (bindingResult.hasErrors()) {
-            return "redirect:/lkq";
+            return "redirect:/404";
         }
         MessageDigest md = MessageDigest.getInstance("SHA-256");
         md.update(user.getPassword().getBytes("UTF-8"));
         byte[] digest = md.digest();
         user.setPassword(String.format("%064x", new java.math.BigInteger(1, digest)));
         userService.addUser(user);
+        WorkflowHistory workflowHistory = new WorkflowHistory();
+        workflowHistory.setAction("Редактирование персональных данных");
+        workflowHistory.setStatus("Выполнено");
+        workflowHistory.setDateTime(new Date());
+        workflowHistory.setUserId(userService.getUserByLogin(getPrincipal()));
+        workFlowHistoryService.addHistory(workflowHistory);
         return "redirect:/lk";
     }
 
@@ -124,7 +126,7 @@ public class Home {
             produces = "application/json")
     @PreAuthorize(value = "!isAnonymous()")
     public @ResponseBody
-    List<User> getHistory(Model model){
+    List<Users> getHistory(Model model){
         return userService.getUsers();
     }
 
@@ -135,11 +137,17 @@ public class Home {
         return "redirect:/users/" + userid + "/history";
     }
 
-    @RequestMapping(value = "/users/{userId}/history", method = RequestMethod.POST,
+    @RequestMapping(value = "/users/{userId}/history", method = RequestMethod.GET,
             produces = "application/json")
     @PreAuthorize(value = "!isAnonymous()")
     public String getHistoryUserById(@PathVariable(value = "userId") int userId, Model model){
-        userService.getUserById(userId);
+        model.addAttribute("listHistory",workFlowHistoryService.getHistoryByUser(userService.getUserById(userId)));
+        WorkflowHistory workflowHistory = new WorkflowHistory();
+        workflowHistory.setAction("Открытие историй пользователя" + userService.getUserById(userId).getLogin() );
+        workflowHistory.setStatus("Выполнено");
+        workflowHistory.setDateTime(new Date());
+        workflowHistory.setUserId(userService.getUserByLogin(getPrincipal()));
+        workFlowHistoryService.addHistory(workflowHistory);
         return "historyPage";
     }
 
@@ -171,6 +179,12 @@ public class Home {
         if (auth != null) {
             new SecurityContextLogoutHandler().logout(request, response, auth);
         }
+        WorkflowHistory workflowHistory = new WorkflowHistory();
+        workflowHistory.setAction("Выход из системы САНРБД" );
+        workflowHistory.setStatus("Выполнено");
+        workflowHistory.setDateTime(new Date());
+        workflowHistory.setUserId(userService.getUserByLogin(getPrincipal()));
+        workFlowHistoryService.addHistory(workflowHistory);
         return "redirect:/login?logout";
     }
 

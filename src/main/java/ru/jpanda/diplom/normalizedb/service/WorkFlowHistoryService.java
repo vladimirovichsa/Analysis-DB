@@ -2,7 +2,6 @@ package ru.jpanda.diplom.normalizedb.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.jpanda.diplom.normalizedb.domain.Serialization;
 import ru.jpanda.diplom.normalizedb.domain.Users;
 import ru.jpanda.diplom.normalizedb.domain.WorkflowHistory;
 import ru.jpanda.diplom.normalizedb.repository.WorkFlowHistoryRepository;
@@ -20,19 +19,19 @@ public class WorkFlowHistoryService {
     @Autowired
     private WorkFlowHistoryRepository workFlowHistoryRepository;
 
-    public WorkflowHistory getSerialization(int id){
+    public WorkflowHistory getHistory(int id){
         return workFlowHistoryRepository.findById(id);
     };
 
-    public WorkflowHistory addSerialization(WorkflowHistory workflowHistory){
+    public WorkflowHistory addHistory(WorkflowHistory workflowHistory){
         return workFlowHistoryRepository.save(workflowHistory);
     }
 
-    public WorkflowHistory getHistoryByUser(Users users){
-        return workFlowHistoryRepository.findByUserId(users);
+    public List<WorkflowHistory> getHistoryByUser(Users users){
+        return workFlowHistoryRepository.findAllByUserId(users);
     }
 
-    public List<WorkflowHistory> getSerialization(){
+    public List<WorkflowHistory> getHistory(){
         return workFlowHistoryRepository.findAll();
     }
 }

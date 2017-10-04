@@ -1,5 +1,8 @@
 package ru.jpanda.diplom.normalizedb.web;
 
+import netscape.javascript.JSObject;
+import org.json.JSONString;
+import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -14,13 +17,12 @@ import ru.jpanda.diplom.normalizedb.core.dbconnection.data.Attribute;
 import ru.jpanda.diplom.normalizedb.core.dbconnection.data.Database;
 import ru.jpanda.diplom.normalizedb.core.dbconnection.data.RelationSchema;
 import ru.jpanda.diplom.normalizedb.core.dbconnection.dbConnection.DbConnection;
+import ru.jpanda.diplom.normalizedb.core.dbconnection.logic.ResponseObject;
 import ru.jpanda.diplom.normalizedb.domain.ConnectionDB;
 import ru.jpanda.diplom.normalizedb.domain.TableType;
 import ru.jpanda.diplom.normalizedb.domain.Users;
-import ru.jpanda.diplom.normalizedb.service.ConnectionDBService;
-import ru.jpanda.diplom.normalizedb.service.DataBaseService;
-import ru.jpanda.diplom.normalizedb.service.TableTypeService;
-import ru.jpanda.diplom.normalizedb.service.UserService;
+import ru.jpanda.diplom.normalizedb.domain.WorkflowHistory;
+import ru.jpanda.diplom.normalizedb.service.*;
 import ru.jpanda.diplom.normalizedb.service.analysis.AnalysisDB;
 
 import javax.servlet.http.HttpServletResponse;
@@ -29,10 +31,7 @@ import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by Alexey on 30.01.2017.
@@ -51,6 +50,9 @@ public class DataBase {
 
     @Autowired
     private DataBaseService dataBaseService;
+
+    @Autowired
+    private WorkFlowHistoryService workFlowHistoryService;
 
 
     @RequestMapping(value = "/connections", method = RequestMethod.GET,
@@ -102,13 +104,42 @@ public class DataBase {
         return "redirect:/connections";
     }
 
-    @RequestMapping(value = "/database/createdatabase", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/database/createdatabase", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize(value = "!isAnonymous()")
     public @ResponseBody
-    String createDataBase(@RequestBody CreateTable obj, HttpServletResponse response) {
-        CreateTable obj1 = obj;
+    ResponseObject createDataBase(@RequestBody CreateTable obj, BindingResult bindingResult) {
+        ArrayList<Attribute> listAttribute = obj.getListAttribute();
 
-        return null;
+        return dataBaseService.getConnection().createTable(obj.getTableName(), listAttribute);
+
+    }
+
+    @RequestMapping(value = "/database/copydata", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize(value = "!isAnonymous()")
+    public @ResponseBody
+    ResponseObject copyData(@RequestBody CreateTable obj, BindingResult bindingResult) {
+        ArrayList<Attribute> listOldAttribute = obj.getListOldAttribute();
+        ArrayList<Attribute> listAttribute = obj.getListAttribute();
+        ResponseObject object = dataBaseService.getConnection().moveTableData(obj.getTableNameOld(),obj.getTableName(), listAttribute,listOldAttribute);
+        if(null != object.getSuccess()){
+            if(null != dataBaseService.getConnection().addColumn(obj.getTableNameOld(),obj.getTableName()).getSuccess()){
+                object = dataBaseService.getConnection().copyDataTableToInDataTableFrom(obj.getTableNameOld(),obj.getTableName(), listAttribute,listOldAttribute);
+            }
+        }
+        return object;
+
+    }
+
+    @RequestMapping(value = "/database/deletedata", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize(value = "!isAnonymous()")
+    public @ResponseBody
+    ResponseObject deleteData(@RequestBody CreateTable obj, BindingResult bindingResult) {
+        ArrayList<Attribute> listOldAttribute = obj.getListOldAttribute();
+        ArrayList<Attribute> listAttribute = obj.getListAttribute();
+        ResponseObject object = dataBaseService.getConnection().deleteOldColumn(obj.getTableNameOld(),listOldAttribute);
+
+        return object;
+
     }
 
     @RequestMapping(value = "/connection/update", method = RequestMethod.POST,
@@ -136,6 +167,12 @@ public class DataBase {
         con.setUser_name(username);
 
         connectionDBService.addConnectionDB(con);
+        WorkflowHistory workflowHistory = new WorkflowHistory();
+        workflowHistory.setAction("Редактирование подключения к базе данных");
+        workflowHistory.setStatus("Выполнено");
+        workflowHistory.setDateTime(new Date());
+        workflowHistory.setUserId(userService.getUserByLogin(getPrincipal()));
+        workFlowHistoryService.addHistory(workflowHistory);
     }
 
     @RequestMapping(value = {"/database"}, method = RequestMethod.GET,
@@ -189,7 +226,12 @@ public class DataBase {
         model.addAttribute("connectionDB", new ConnectionDB());
         model.addAttribute("connectionList", connectionDBService
                 .getAllConnectionByUserID(userService.getUserByLogin(getPrincipal())));
-
+        WorkflowHistory workflowHistory = new WorkflowHistory();
+        workflowHistory.setAction("Подключение к " + database.getType().name);
+        workflowHistory.setStatus("Выполнено");
+        workflowHistory.setDateTime(new Date());
+        workflowHistory.setUserId(userService.getUserByLogin(getPrincipal()));
+        workFlowHistoryService.addHistory(workflowHistory);
         return "dataBasePage";
     }
 
@@ -201,7 +243,29 @@ public class DataBase {
     RelationSchema getTableByTableName(@PathVariable(value = "schemaName") String schemaName) throws SQLException {
         dataBaseService.getConnection().getDataByTableNameFromDb(schemaName);
         RelationSchema relation = dataBaseService.getConnection().getDatabase().getRelationSchema(schemaName);
+        WorkflowHistory workflowHistory = new WorkflowHistory();
+        workflowHistory.setAction("Получение данных из таблицы " + schemaName);
+        workflowHistory.setStatus("Выполнено");
+        workflowHistory.setDateTime(new Date());
+        workflowHistory.setUserId(userService.getUserByLogin(getPrincipal()));
+        workFlowHistoryService.addHistory(workflowHistory);
+        return relation;
+    }
 
+    @RequestMapping(value = {"/database/table/analysis/{schemaName}/{tableName}/atomicity"}, method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @PreAuthorize(value = "!isAnonymous()")
+    public
+    @ResponseBody
+    RelationSchema deleteAtomicy(@PathVariable(value = "schemaName") String schemaName,
+                                 @PathVariable(value = "tableName") String tableName) throws SQLException {
+        RelationSchema relation = dataBaseService.getConnection().getDatabase().getRelationSchema(schemaName);
+        ArrayList<Attribute> attributes = relation.getAttributes();
+        for (Attribute attribute : attributes) {
+            if(attribute.isAtomicity()){
+                dataBaseService.getConnection().addRow(tableName,attributes,attribute.getAtomicityObject().getRow());
+            }
+        }
         return relation;
     }
 
@@ -211,6 +275,26 @@ public class DataBase {
     public
     @ResponseBody
     RelationSchema getAnalysisTableByTableName(@PathVariable(value = "schemaName") String schemaName) throws SQLException {
+        dataBaseService.getConnection().getDataByTableNameFromAnalysis(schemaName);
+        RelationSchema relation = dataBaseService.getConnection().getDatabase().getRelationSchema(schemaName);
+        AnalysisDB analysisDB = new AnalysisDB();
+        analysisDB.setRelationSchema(relation);
+        analysisDB.analysis();
+        WorkflowHistory workflowHistory = new WorkflowHistory();
+        workflowHistory.setAction("Анализ данных " + schemaName);
+        workflowHistory.setStatus("Выполнено");
+        workflowHistory.setDateTime(new Date());
+        workflowHistory.setUserId(userService.getUserByLogin(getPrincipal()));
+        workFlowHistoryService.addHistory(workflowHistory);
+        return relation;
+    }
+
+    @RequestMapping(value = {"/database/table/analysis/{schemaName}/atomicity"}, method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @PreAuthorize(value = "!isAnonymous()")
+    public
+    @ResponseBody
+    RelationSchema getAnalysisTableAtamicily(@PathVariable(value = "schemaName") String schemaName) throws SQLException {
         dataBaseService.getConnection().getDataByTableNameFromAnalysis(schemaName);
         RelationSchema relation = dataBaseService.getConnection().getDatabase().getRelationSchema(schemaName);
         AnalysisDB analysisDB = new AnalysisDB();
@@ -228,6 +312,47 @@ public class DataBase {
         return connectionDBService
                 .getAllConnectionByUserID(userService.getUserByLogin(getPrincipal()));
 
+    }
+
+    @RequestMapping(value = {"/database/applyAction/{tableName}"}, method = RequestMethod.POST,
+            produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @PreAuthorize(value = "!isAnonymous()")
+    public
+    @ResponseBody
+    ResponseObject applyAction(@PathVariable(value = "tableName") String tableName,
+                                                             Model model, @RequestParam(value = "columns[]") String... columns) {
+        Database database = dataBaseService.getConnection().getDatabase();
+        List<Attribute> list = database.getRelationSchema(tableName).getAttributes();
+        ResponseObject responseObject = null;
+        for (String column : columns) {
+
+                RelationSchema relation = database.getRelationSchema(tableName);
+                ArrayList<Attribute> attributes = relation.getAttributes();
+                for (Attribute attribute : attributes) {
+                    if (attribute.getArrayIndex() == Integer.parseInt(column)) {
+                        if(attribute.isAtomicity()){
+                            WorkflowHistory workflowHistory = new WorkflowHistory();
+                            workflowHistory.setAction("Разделение данных на атомарные значения в атрибуте :" + attribute.getName());
+                            workflowHistory.setDateTime(new Date());
+                            workflowHistory.setUserId(userService.getUserByLogin(getPrincipal()));
+                            responseObject = dataBaseService.getConnection().addRow(tableName, attributes, attribute.getAtomicityObject().getRow());
+                            if(null != responseObject.getError()){
+                                workflowHistory.setStatus("Не выполнено");
+                            }else {
+                                workflowHistory.setStatus("Выполнено");
+                            }
+                            workFlowHistoryService.addHistory(workflowHistory);
+                        }
+                    }
+                }
+        }
+        WorkflowHistory workflowHistory = new WorkflowHistory();
+        workflowHistory.setAction("Разделение данных на атомарные значения отношение" + tableName);
+        workflowHistory.setStatus("Выполнено");
+        workflowHistory.setDateTime(new Date());
+        workflowHistory.setUserId(userService.getUserByLogin(getPrincipal()));
+        workFlowHistoryService.addHistory(workflowHistory);
+        return responseObject;
     }
 
     @RequestMapping(value = {"/database/getColumnByTableName/{tableName}"}, method = RequestMethod.POST,

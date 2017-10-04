@@ -26,11 +26,11 @@ public class WorkflowHistory {
     
     private String action;
     
-    private int status;
+    private String status;
 
-    @ManyToOne()
-    @JoinColumn(name = "serialization_id")
-    private Serialization serialization;
+//    @ManyToOne()
+//    @JoinColumn(name = "serialization_id")
+//    private Serialization serialization;
 
     private Date dateTime;
 
@@ -58,17 +58,17 @@ public class WorkflowHistory {
         this.action = action;
     }
 
-    public int getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public Serialization getSerialization() {
-        return serialization;
-    }
+//    public Serialization getSerialization() {
+//        return serialization;
+//    }
 
-    public void setSerialization(Serialization serialization) {
-        this.serialization = serialization;
-    }
+//    public void setSerialization(Serialization serialization) {
+//        this.serialization = serialization;
+//    }
 
     public Date getDateTime() {
         return dateTime;
@@ -78,31 +78,31 @@ public class WorkflowHistory {
         this.dateTime = dateTime;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 
-    public Serialization getSerializationId() {
-        return serialization;
-    }
+//    public Serialization getSerializationId() {
+//        return serialization;
+//    }
+//
+//    public void setSerializationId(Serialization serialization) {
+//        this.serialization = serialization;
+//    }
 
-    public void setSerializationId(Serialization serialization) {
-        this.serialization = serialization;
-    }
 
     @Override
     public boolean equals(Object o) {
-
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
         WorkflowHistory that = (WorkflowHistory) o;
 
         if (id != that.id) return false;
-        if (status != that.status) return false;
         if (userId != null ? !userId.equals(that.userId) : that.userId != null) return false;
         if (action != null ? !action.equals(that.action) : that.action != null) return false;
-        return serialization != null ? serialization.equals(that.serialization) : that.serialization == null;
+        if (status != null ? !status.equals(that.status) : that.status != null) return false;
+        return dateTime != null ? dateTime.equals(that.dateTime) : that.dateTime == null;
     }
 
     @Override
@@ -110,8 +110,8 @@ public class WorkflowHistory {
         int result = id;
         result = 31 * result + (userId != null ? userId.hashCode() : 0);
         result = 31 * result + (action != null ? action.hashCode() : 0);
-        result = 31 * result + status;
-        result = 31 * result + (serialization != null ? serialization.hashCode() : 0);
+        result = 31 * result + (status != null ? status.hashCode() : 0);
+        result = 31 * result + (dateTime != null ? dateTime.hashCode() : 0);
         return result;
     }
 }

@@ -8,6 +8,7 @@ import java.util.ArrayList;
 public class CreateTable {
 
     private String tableName;
+    private String tableNameOld;
     private ArrayList<Attribute> listAttribute;
     private ArrayList<Attribute> listOldAttribute;
 //    private boolean autoIncrement;
@@ -17,6 +18,14 @@ public class CreateTable {
 //    private String columnTypeName;
 
     public CreateTable() {
+    }
+
+    public String getTableNameOld() {
+        return tableNameOld;
+    }
+
+    public void setTableNameOld(String tableNameOld) {
+        this.tableNameOld = tableNameOld;
     }
 
     public String getTableName() {

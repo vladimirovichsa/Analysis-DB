@@ -145,7 +145,7 @@
                 </tr>
                 <tr>
                         <form:select path="type_id" class="form-control"  name="maintenanceType" id="work_hour2">
-                        <c:forEach items="${userForm.type}" var="item">
+                        <c:forEach items="${userForm.type_id}" var="item">
                         <form:option value="${item.getId}">${item.getType}</form:option>
                         </c:forEach>
                         </form:select>

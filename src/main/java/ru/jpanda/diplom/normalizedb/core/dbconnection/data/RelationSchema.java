@@ -21,6 +21,9 @@ public class RelationSchema implements Serializable {
   private static int id = 0;
   private int ownId;
   private List<List<String>> dataFromAnalysis;
+  private boolean nf1 = false;
+  private boolean nf2 = false;
+  private boolean nf3 = false;
 
   public RelationSchema() {
     super();
@@ -59,6 +62,30 @@ public class RelationSchema implements Serializable {
     if (!name.equals(this.name)) {
       this.name = name;
     }
+  }
+
+  public boolean isNf1() {
+    return nf1;
+  }
+
+  public void setNf1(boolean nf1) {
+    this.nf1 = nf1;
+  }
+
+  public boolean isNf2() {
+    return nf2;
+  }
+
+  public void setNf2(boolean nf2) {
+    this.nf2 = nf2;
+  }
+
+  public boolean isNf3() {
+    return nf3;
+  }
+
+  public void setNf3(boolean nf3) {
+    this.nf3 = nf3;
   }
 
   public void renameAttributeWithoutFiring(Attribute attribute, String newName) {

@@ -1,9 +1,8 @@
 package ru.jpanda.diplom.normalizedb.service.analysis;
 
-import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 import ru.jpanda.diplom.normalizedb.Util.Constants;
+import ru.jpanda.diplom.normalizedb.core.dbconnection.data.Atomicity;
 import ru.jpanda.diplom.normalizedb.core.dbconnection.data.Attribute;
 import ru.jpanda.diplom.normalizedb.core.dbconnection.data.RelationSchema;
 
@@ -41,6 +40,11 @@ public class AnalysisDB {
         for (Attribute attribute : attributes) {
             if (checkAttributeOnAnalysis(attribute)) {
                 List<String> strings = attributeData.get(attribute.getArrayIndex());
+                Atomicity atomicity = checkColumnsAtomicity(strings);
+                if (atomicity.getRow().size() > 0) {
+                    attribute.setAtomicityObject(atomicity);
+                    attribute.setAtomicity(true);
+                }
                 Set<String> uniqueString = new HashSet<>(strings);
                 double percentNotUniqueRow = (uniqueString.size() * 100) / strings.size();
                 if (percentNotUniqueRow <= Constants.PERCENT_UNIQUE_ROWS_COLUMN_CRITICAL) {
@@ -52,11 +56,25 @@ public class AnalysisDB {
                 } else if (percentNotUniqueRow > Constants.PERCENT_UNIQUE_ROWS_COLUMN_NORMAL) {
                     attribute.setNormal(true);
                 }
-            }else {
+            } else {
                 attribute.setNormal(true);
             }
         }
         return relationSchema;
+    }
+
+    public Atomicity checkColumnsAtomicity(List<String> stringList) {
+        List<Integer> atomicityList = new ArrayList<>();
+        Atomicity atomicity = new Atomicity();
+        int i = 0;
+        for (String s : stringList) {
+            if (s.split("\\,|\\;|\\|").length > 1) {
+                atomicityList.add(i);
+            }
+            i++;
+        }
+        atomicity.setRow(atomicityList);
+        return atomicity;
     }
 
     private boolean checkAttributeOnAnalysis(Attribute attribute) {

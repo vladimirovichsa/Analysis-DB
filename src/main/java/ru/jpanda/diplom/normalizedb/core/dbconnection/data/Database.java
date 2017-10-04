@@ -35,7 +35,6 @@ public class Database implements Serializable {
     custCompany = "";
     custAdress = "";
     notes = "";
-    type = TypeEnum.MYSQL;
     searchResult = new ArrayList<>();
     columnTypes = new ArrayList<>(Arrays.asList(TypeMySql.values()));
   }

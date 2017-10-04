@@ -99,4 +99,4 @@
         </div><!--/.nav-collapse -->
     </div><!--/.container-fluid -->
 </nav>
-<div id="new_repair" title="Список подключений" style="display: none"></div>
+<div id="new_repair" style="display: none"></div>

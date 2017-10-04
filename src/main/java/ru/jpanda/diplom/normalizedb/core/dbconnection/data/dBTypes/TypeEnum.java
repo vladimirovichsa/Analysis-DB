@@ -7,7 +7,7 @@ package ru.jpanda.diplom.normalizedb.core.dbconnection.data.dBTypes;
 public enum TypeEnum {
   MYSQL("MYSQL"), POSTGRES("PostgreSQL"); //, POSTGRES(""), MSDB("Microsoft"), ORACLE("Oracle"), SQLITE("SQLite3");
 
-  private final String name;
+  public final String name;
 
   private TypeEnum(String name) {
     this.name = name;
